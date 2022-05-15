@@ -1,2 +1,2 @@
 # traveloka-ocr-ml
-MachiTraveloka OCR Project machine learning engineer team repository
+Machine Learning engineer team repository of Traveloka OCR Project
