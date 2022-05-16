@@ -14,7 +14,7 @@ from tensorflow.keras import preprocessing
 
 # taken from python 3.5 docs
 def _accumulate(iterable, fn=lambda x, y: x + y):
-    'Return running totals'
+    "Return running totals"
     # _accumulate([1,2,3,4,5]) --> 1 3 6 10 15
     # _accumulate([1,2,3,4,5], operator.mul) --> 1 2 6 24 120
     it = iter(iterable)
@@ -26,33 +26,42 @@ def _accumulate(iterable, fn=lambda x, y: x + y):
     for element in it:
         total = fn(total, element)
         yield total
-        
-def tensorflow_dataloader(dataset, batch_size=4, shuffle=False, num_workers=0, collate_fn=None, prefetch_factor=2):
+
+
+def tensorflow_dataloader(
+    dataset,
+    batch_size=4,
+    shuffle=False,
+    num_workers=0,
+    collate_fn=None,
+    prefetch_factor=2,
+):
     data = tf.data.Dataset.from_generator(dataset)
     if shuffle:
-        data = data.shuffle(len(data)) # rawan error
+        data = data.shuffle(len(data))  # rawan error
     if collate_fn:
         data = data.map(collate_fn, num_parallel_calls=num_workers)
     data = data.batch(batch_size)
     data = data.prefetch(prefetch_factor)
     return data
-    
-        
+
+
 # rawan error
 class Subset(keras.utils.Sequence):
     def __init__(self, dataset, indices: Sequence):
         self.dataset = dataset
         self.indices = indices
-        
+
     def __getitem__(self, idx):
         if isinstance(idx, list):
             return self.dataset[[self.indices[i] for i in idx]]
         else:
             self.dataset[self.indices[idx]]
-            
+
     def __len__(self):
         return len(self.indices)
-        
+
+
 class ResizeNormalize(object):
     def __init__(self, size, interpolation=Image.BICUBIC) -> None:
         self.size = size
@@ -163,44 +172,59 @@ class Batch_Balanced_Dataset(object):
             _batch_size = max(round(opt.batch_size * float(batch_ratio_d)), 1)
             print(dashed_line)
             log.write(dashed_line + "\\n")
-            _dataset, _dataset_log = hierarchical_dataset(root=opt.train_data, opt=opt, select_data=[selected_d])
+            _dataset, _dataset_log = hierarchical_dataset(
+                root=opt.train_data, opt=opt, select_data=[selected_d]
+            )
             total_number_dataset = len(_dataset)
             log.write(_dataset_log)
-            
+
             """
             The total number of data can be modified with opt.total_data_usage_ratio.
             ex) opt.total_data_usage_ratio = 1 indicates 100% usage, and 0.2 indicates 20% usage.
             See 4.2 section in our paper.
             """
-            number_dataset = int(total_number_dataset * float(opt.total_data_usage_ratio))
+            number_dataset = int(
+                total_number_dataset * float(opt.total_data_usage_ratio)
+            )
             dataset_split = [number_dataset, total_number_dataset - number_dataset]
             indices = range(total_number_dataset)
-            _dataset, _ = [Subset(_dataset, indices[offset - length:offset]) for offset, length in zip(_accumulate(dataset_split), dataset_split)]
+            _dataset, _ = [
+                Subset(_dataset, indices[offset - length : offset])
+                for offset, length in zip(_accumulate(dataset_split), dataset_split)
+            ]
             selected_d_log = f"num total samples of {selected_d}: {total_number_dataset} x {opt.total_data_usage_ratio} (total_data_usage_ratio) = {len(_dataset)}\n"
             selected_d_log += f"num samples of {selected_d} per batch: {opt.batch_size} x {float(batch_ratio_d)} (batch_ratio) = {_batch_size}"
             print(selected_d_log)
             log.write(selected_d_log + "\\n")
             batch_size_list.append(str(_batch_size))
             Total_batch_size += _batch_size
-            
-            _data_loader = tensorflow_dataloader(_dataset, batch_size=_batch_size, shuffle=True, collate_fn=_AlignCollate, num_workers=int(opt.workers))
+
+            _data_loader = tensorflow_dataloader(
+                _dataset,
+                batch_size=_batch_size,
+                shuffle=True,
+                collate_fn=_AlignCollate,
+                num_workers=int(opt.workers),
+            )
             self.data_loader_list.append(_data_loader)
             self.dataloader_iter_list.append(iter(_data_loader))
-            
-        Total_batch_size_log = f'{dashed_line}\n'
-        batch_size_sum = '+'.join(batch_size_list)
-        Total_batch_size_log += f'Total_batch_size: {batch_size_sum} = {Total_batch_size}\n'
-        Total_batch_size_log += f'{dashed_line}'
+
+        Total_batch_size_log = f"{dashed_line}\n"
+        batch_size_sum = "+".join(batch_size_list)
+        Total_batch_size_log += (
+            f"Total_batch_size: {batch_size_sum} = {Total_batch_size}\n"
+        )
+        Total_batch_size_log += f"{dashed_line}"
         opt.batch_size = Total_batch_size
 
         print(Total_batch_size_log)
-        log.write(Total_batch_size_log + '\n')
+        log.write(Total_batch_size_log + "\n")
         log.close()
-        
+
     def get_batch(self):
         balanced_batch_images = []
         balanced_batch_texts = []
-        
+
         for i, data_loader_iter in enumerate(self.data_loader_list):
             try:
                 image, text = data_loader_iter.next()
@@ -213,7 +237,7 @@ class Batch_Balanced_Dataset(object):
                 balanced_batch_texts += text
             except ValueError:
                 pass
-            
+
         balanced_batch_images = tf.concat(balanced_batch_images, axis=0)
-        
+
         return balanced_batch_images, balanced_batch_texts
