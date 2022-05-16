@@ -41,5 +41,39 @@ class Attention(keras.models.Model):
         return one_hot # rawan error
     
     def call(self, batch_H, text, is_train=True, batch_max_length=25):
-        return None
+        """
+        input:
+            batch_H : contextual_feature H = hidden state of encoder. [batch_size x num_steps x contextual_feature_channels]
+            text : the text-index of each image. [batch_size x (max_length+1)]. +1 for [GO] token. text[:, 0] = [GO].
+        output: probability distribution at each step [batch_size x num_steps x num_classes]
+        """
+        batch_size = batch_H.shape[0]
+        num_steps = batch_max_length + 1
+        
+        output_hiddens = tf.zeros(shape=[batch_size, num_steps, self.hidden_size])
+        hidden = (tf.zeros(shapes=[batch_size, self.hidden_size]), tf.zeros(shapes=[batch_size, self.hidden_size]))
+        
+        if is_train:
+            for i in range(num_steps):
+                # one-hot vectors for a i-th char. in a batch
+                char_onehots = self._char_to_onehot(text[:, i], onehot_dim=self.num_classes)
+                # hidden : decoder's hidden s_{t-1}, batch_H : encoder's hidden H, char_onehots : one-hot(y_{t-1})
+                hidden, alpha = self.attention_cell(hidden, batch_H, char_onehots)
+                output_hiddens[:, i, :] = hidden[0]
+                
+            probs = self.generator(output_hiddens)
+            
+        else:
+            targets = tf.zeros(shape=[batch_size], dtypes=tf.float64)
+            probs = tf.zeros(shape=[batch_size, num_steps, self.num_classes])
+            
+            for i in range(num_steps):
+                char_onehots = self._char_to_onehot(targets, onehot_dim=self.num_classes)
+                hidden, alpha = self.attention_cell(hidden, batch_H, char_onehots)
+                probs_step = self.generator(hidden[0])
+                probs[:, i, :] = probs_step
+                _, next_input = tf.reduce_max(probs_step, axis=1) # rawan error
+                targets = next_input
+                
+        return probs
         

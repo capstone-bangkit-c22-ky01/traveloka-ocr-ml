@@ -13,6 +13,7 @@ class VGG_FeatureExtractor(keras.models.Model):
     def __init__(self, output_channel=512):
         super().__init__()
 
+
         self.output_channel = [
             int(output_channel / 8),
             int(output_channel / 4),
