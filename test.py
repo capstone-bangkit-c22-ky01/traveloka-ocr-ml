@@ -47,8 +47,9 @@ def main():
     parser.add_argument('--hidden_size', type=int, default=256, help='the size of the LSTM hidden state')
 
     opt = parser.parse_args()
-    final_model = Model(opt).build(input_shape=[32, 32, 3])
-    print(final_model.summary())
+    model = Model(opt)
+    model.build(input_shape=[[1, 1, 32, 100]])
+    print(model.summary())
     
 if __name__=="__main__":
     main()

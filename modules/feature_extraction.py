@@ -9,8 +9,8 @@ class VGG_FeatureExtractor(keras.models.Model):
 
     """
 
-    def __init__(self, output_channel=512):
-        super().__init__()
+    def __init__(self, output_channel=512, **kwargs):
+        super(VGG_FeatureExtractor, self).__init__(**kwargs)
 
         self.output_channel = [
             int(output_channel / 8),
@@ -21,7 +21,7 @@ class VGG_FeatureExtractor(keras.models.Model):
         self.ConvNet = tf.keras.Sequential(
             [
                 layers.Conv2D(
-                    self.output_channel[0], kernel_size=3, strides=1, padding="SAME"
+                    self.output_channel[0], kernel_size=3, strides=1, padding="SAME", input_shape=(1, 32, 100)
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=2),
@@ -48,7 +48,6 @@ class VGG_FeatureExtractor(keras.models.Model):
                 ),
                 layers.BatchNormalization(),
                 layers.ReLU(),
-                layers.MaxPool2D(pool_size=(2, 1), strides=(2, 1)),
                 layers.Conv2D(
                     self.output_channel[3],
                     kernel_size=3,
@@ -66,7 +65,7 @@ class VGG_FeatureExtractor(keras.models.Model):
             ]
         )
 
-    def call(self, X):
+    def call(self, X, training=None):
         return self.ConvNet(X)
 
 
