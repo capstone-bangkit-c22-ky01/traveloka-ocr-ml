@@ -5,14 +5,13 @@ from tensorflow.keras import layers  # type: ignore
 
 
 class VGG_FeatureExtractor(keras.models.Model):
-    """ FeatureExtractor of CRNN (https://arxiv.org/pdf/1507.05717.pdf) 
+    """FeatureExtractor of CRNN (https://arxiv.org/pdf/1507.05717.pdf)
     Berarti Transfer Learning untuk pretrainednya VGG
-    
+
     """
 
     def __init__(self, output_channel=512):
         super().__init__()
-
 
         self.output_channel = [
             int(output_channel / 8),
@@ -125,7 +124,7 @@ class GRCL(keras.models.Model):
         self.GRCL = keras.Sequential(self.GRCL)
 
     def call(self, X):
-        """ The input of GRCL is consistant over time t, which is denoted by u(0)
+        """The input of GRCL is consistant over time t, which is denoted by u(0)
         thus wgf_u / wf_u is also consistant over time t.
         """
         wgf_u = self.wgf_u(X)
@@ -140,7 +139,7 @@ class GRCL(keras.models.Model):
 
 
 class RCNN_FeatureExtractor(keras.models.Model):
-    """ FeatureExtractor of GRCNN (https://papers.nips.cc/paper/6637-gated-recurrent-convolution-neural-network-for-ocr.pdf) """
+    """FeatureExtractor of GRCNN (https://papers.nips.cc/paper/6637-gated-recurrent-convolution-neural-network-for-ocr.pdf)"""
 
     def __init__(self, output_channel):
         super().__init__()
@@ -398,7 +397,7 @@ class ResNet(keras.models.Model):
 
 
 class ResNet_FeatureExtractor(keras.models.Model):
-    """ FeatureExtractor of FAN (http://openaccess.thecvf.com/content_ICCV_2017/papers/Cheng_Focusing_Attention_Towards_ICCV_2017_paper.pdf) """
+    """FeatureExtractor of FAN (http://openaccess.thecvf.com/content_ICCV_2017/papers/Cheng_Focusing_Attention_Towards_ICCV_2017_paper.pdf)"""
 
     def __init__(self, output_channel=512) -> None:
         super().__init__()
