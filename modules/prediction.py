@@ -41,7 +41,7 @@ class Attention(keras.models.Model):
         one_hot = tf.one_hot(input_char, onehot_dim)
         return one_hot  # rawan error
 
-    def call(self, batch_H, text, is_train=True, batch_max_length=25):
+    def call(self, batch_H, text, training=True, batch_max_length=25):
         """
         input:
             batch_H : contextual_feature H = hidden state of encoder. [batch_size x num_steps x contextual_feature_channels]
@@ -57,7 +57,7 @@ class Attention(keras.models.Model):
             tf.zeros(shapes=[batch_size, self.hidden_size]),
         )
 
-        if is_train:
+        if training:
             for i in range(num_steps):
                 # one-hot vectors for a i-th char. in a batch
                 char_onehots = self._char_to_onehot(

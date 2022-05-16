@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tensorflow_addons as tfa
 from tensorflow import keras
-from tensorflow.keras.layers import Dense
+from tensorflow.keras import layers
 
 from modules.feature_extraction import VGG_FeatureExtractor
 
@@ -10,12 +10,6 @@ class Model(keras.models.Model):
     def __init__(self, opt):
         super().__init__()
         self.opt = opt
-        self.stages = {
-            "Trans": opt.Transformation,
-            "Feat": opt.FeatureExtraction,
-            "Seq": opt.SequenceModelling,
-            "Pred": opt.Prediction,
-        }
 
         print("No Transformation Module")
 
@@ -23,15 +17,15 @@ class Model(keras.models.Model):
         self.FeatureExtraction_output = opt.output_channel
         # untuk sekarang
         self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
-            output_size=(None, 1)
+            output_size=(1)
         )
-
+        opt.num_class = len(opt.character)
         print("No sequencemodelling module specified")
         self.SequenModelling_output = self.FeatureExtraction_output
 
         self.Prediction = layers.Dense(opt.num_class)
 
-    def forward(self, X, is_train=True):
+    def call(self, X, training=True):
 
         """Feature Extraction Stage"""
         visual_feature = self.FeatureExtraction(X)

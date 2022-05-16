@@ -1,5 +1,4 @@
 import tensorflow as tf
-from regex import X
 from tensorflow import keras
 from tensorflow.keras import layers  # type: ignore
 
