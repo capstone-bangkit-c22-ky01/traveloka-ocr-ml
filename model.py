@@ -5,7 +5,9 @@ from tensorflow.keras import layers
 
 from modules.feature_extraction import VGG_FeatureExtractor
 
-tf.keras.backend.set_image_data_format('channels_first')
+tf.keras.backend.set_image_data_format("channels_first")
+
+
 class Model(keras.models.Model):
     def __init__(self, opt, **kwargs):
         super(Model, self).__init__(**kwargs)
@@ -16,9 +18,7 @@ class Model(keras.models.Model):
         self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel)
         self.FeatureExtraction_output = opt.output_channel
         # untuk sekarang
-        self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
-            output_size=(1)
-        )
+        self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(output_size=(1))
         opt.num_class = len(opt.character)
         print("No sequence modelling module specified")
         self.SequenModelling_output = self.FeatureExtraction_output

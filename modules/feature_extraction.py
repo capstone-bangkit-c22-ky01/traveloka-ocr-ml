@@ -21,7 +21,11 @@ class VGG_FeatureExtractor(keras.models.Model):
         self.ConvNet = tf.keras.Sequential(
             [
                 layers.Conv2D(
-                    self.output_channel[0], kernel_size=3, strides=1, padding="SAME", input_shape=(1, 32, 100)
+                    self.output_channel[0],
+                    kernel_size=3,
+                    strides=1,
+                    padding="SAME",
+                    input_shape=(1, 32, 100),
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=2),
