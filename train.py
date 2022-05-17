@@ -4,18 +4,20 @@ import random
 import string
 import sys
 import time
-import tensorflow as tf
+
 import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 
-from utils import CTCLabelConverter, CTCLabelConverterForBaiduWarpctc
 from dataset import (
-    hierarchical_dataset,
     AlignCollate,
     Batch_Balanced_Dataset,
+    hierarchical_dataset,
     tensorflow_dataloader,
 )
 from model import Model
+from modules.custom import custom_sparse_categorical_crossentropy
+from utils import Averager, CTCLabelConverter, CTCLabelConverterForBaiduWarpctc
 
 
 def ignore_index(tensor, ignored_index=0):
@@ -79,6 +81,6 @@ def train(opt):
     else:
         # kalo gak yang sparse ya yang biasa
         # selalu gunakan ignored_index=0 disini
-        criterion = tf.nn.sparse_softmax_cross_entropy_with_logits
+        criterion = custom_sparse_categorical_crossentropy
 
     loss_avg = Averager()

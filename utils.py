@@ -98,3 +98,26 @@ class CTCLabelConverterForBaiduWarpctc(object):
             texts.append(text)
             index += l
         return texts
+
+
+class Averager(object):
+    """Compute average for tf.constant, used for loss average."""
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.n_count = 0
+        self.sum = 0
+
+    def add(self, v):
+        count = tf.size(v)
+        v = tf.reduce_sum(v)
+        self.n_count += count
+        self.sum += v
+
+    def val(self):
+        res = 0
+        if self.n_count != 0:
+            res = self.sum / float(self.n_count)
+        return res

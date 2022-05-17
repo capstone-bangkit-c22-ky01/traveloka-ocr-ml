@@ -1,8 +1,9 @@
 import warnings
+
 import tensorflow as tf
 
 
-def sparse_categorical_crossentropy(
+def custom_sparse_categorical_crossentropy(
     y_true: tf.Tensor,
     y_pred: tf.Tensor,
     from_logits: bool = False,
