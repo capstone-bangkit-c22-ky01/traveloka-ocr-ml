@@ -1,7 +1,7 @@
 import glob
 from typing import Union
 
-import cv2
+import cv2  # type: ignore
 import numpy as np
 from PIL import Image
 from scipy.ndimage import interpolation as inter
