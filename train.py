@@ -9,12 +9,8 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
-from dataset import (
-    AlignCollate,
-    Batch_Balanced_Dataset,
-    hierarchical_dataset,
-    tensorflow_dataloader,
-)
+from dataset import (AlignCollate, Batch_Balanced_Dataset,
+                     hierarchical_dataset, tensorflow_dataloader)
 from model import Model
 from modules.custom import custom_sparse_categorical_crossentropy
 from utils import Averager, CTCLabelConverter, CTCLabelConverterForBaiduWarpctc
@@ -84,3 +80,65 @@ def train(opt):
         criterion = custom_sparse_categorical_crossentropy
 
     loss_avg = Averager()
+    
+    if opt.adam:
+        optimizer = keras.optimizers.Adam(learning_rate=opt.lr, beta_1=opt.beta1, beta_2=0.999)
+    else:
+        optimizer = keras.optimizers.Adadelta(learning_rate=opt.lr, rho=opt.rho, epsilon=opt.eps)
+        
+    print("Optimizer:")
+    print(optimizer)
+    
+    """ final options """
+    # print(opt)
+    with open(f'./saved_models/{opt.exp_name}/opt.txt', 'a') as opt_file:
+        opt_log = '------------ Options -------------\n'
+        args = vars(opt)
+        for k, v in args.items():
+            opt_log += f'{str(k)}: {str(v)}\n'
+        opt_log += '---------------------------------------\n'
+        print(opt_log)
+        opt_file.write(opt_log)
+        
+    """ start training """
+    start_iter = 0
+    if opt.saved_model != '':
+        try:
+            start_iter = int(opt.saved_model.split('_')[-1].split('.')[0])
+            print(f'continue to train, start_iter: {start_iter}')
+        except:
+            pass
+        
+    start_time = time.time()
+    best_accuracy = -1
+    best_norm_ED = -1
+    iteration = start_iter
+    
+    strategy = tf.distribute.MirroredStrategy()
+    
+    while(True):
+        image_tensors, labels = train_dataset.get_batch()
+        image = image_tensors
+        text, length = converter.encode(labels, batch_max_length=opt.batch_max_length)
+        batch_size = image.shape[0]
+        
+        if "CTC" in opt.Prediction:
+            with tf.GradientTape() as tape:
+                preds = model(image, text)
+                preds_size = tf.constant([preds.shape[1]] * batch_size)
+            if opt.baiduCTC:
+                preds = tf.transpose(preds, perm=[1, 0, 2])
+                cost = criterion(labels=preds, logits=text, label_length=preds_size, logit_length=length) / batch_size
+            else:
+                preds = tf.nn.log_softmax(preds, axis=2)
+                preds = tf.transpose(preds, perm=[1, 0, 2])
+                cost = criterion(labels=preds, logits=text, label_length=preds_size, logit_length=length)
+        
+        # this could be total mess
+        variables = model.trainable_variables
+        gradients = tape.gradient(cost, variables)
+        gradients, _ = tf.clip_by_global_norm(gradients, opt.grad_clip)
+        optimizer.apply_gradients(zip(gradients, variables))
+        
+        loss_avg.add(cost)
+        # continue to validation

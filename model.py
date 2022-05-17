@@ -25,7 +25,7 @@ class Model(keras.models.Model):
 
         self.Prediction = layers.Dense(opt.num_class)
 
-    def call(self, X, training=None):
+    def call(self, X, text, training=None):
 
         """Feature Extraction Stage"""
         visual_feature = self.FeatureExtraction(X)
