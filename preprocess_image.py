@@ -81,6 +81,17 @@ def thresholding_otsu(image: np.array) -> np.array:
     return preprocessed_image
 
 
+def all_preprocessing(image: Image) -> Image:
+    np_image = PIL_to_cv2(image)
+    # np_image = noise_removal(np_image)
+    np_image = convert_to_binary(np_image)
+    # np_image = thresholding_trunc(np_image)
+    np_image = thresholding_otsu(np_image)
+    final_result = cv2_to_PIL(np_image)
+
+    return final_result
+
+
 def main():
     list_image = glob.glob("./data/train_cut/*.jpg")
     for image_path in list_image:
