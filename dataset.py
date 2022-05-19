@@ -68,17 +68,13 @@ def tensorflow_dataloader(
     collate_fn=None,
     prefetch_factor=2,
 ):
-    data = tf.data.Dataset.from_generator(
-        dataset,
-        output_signature= tf.TensorSpec(shape = (1,), dtype = tf.float64),
-    )
-    print(data)
+    data = tf.data.Dataset.from_generator(dataset)
     if shuffle:
-        data = data.shuffle(400)  # rawan error
-    if collate_fn:
-        data = data.map(collate_fn, num_parallel_calls=tf.data.AUTOTUNE)
+        data = data.shuffle(len(data))  # rawan error
     data = data.batch(batch_size)
-    data = data.prefetch(tf.data.AUTOTUNE)
+    if collate_fn:
+        data = data.map(collate_fn, num_parallel_calls=num_workers)
+    data = data.prefetch(prefetch_factor)
     return data
 
 
@@ -100,7 +96,6 @@ class Subset(keras.utils.Sequence):
     def __init__(self, dataset, indices: Sequence):
         self.dataset = dataset
         self.indices = indices
-        self.indexs = tf.range(len(self))
 
     def __getitem__(self, idx):
         if isinstance(idx, list):
@@ -110,10 +105,6 @@ class Subset(keras.utils.Sequence):
 
     def __len__(self):
         return len(self.indices)
-    
-    def __call__(self):
-        for i in self.indexs:
-            yield self.__getitem__(i)
 
 
 # rawan error
@@ -126,13 +117,12 @@ class ConcatDataset(keras.utils.Sequence):
             r.append(l + s)
             s += l
         return r
-    
+
     def __init__(self, datasets: keras.utils.Sequence):
         super(ConcatDataset, self).__init__()
         self.datasets = list(datasets)
         assert len(self.datasets) > 0, "datasets should not be an empty iterable"
         self.cumulative_sizes = self.cumsum(self.datasets)
-        self.indexs = tf.range(len(self))
 
     def __len__(self):
         return self.cumulative_sizes[-1]
@@ -151,10 +141,6 @@ class ConcatDataset(keras.utils.Sequence):
         else:
             sample_index = index - self.cumulative_sizes[dataset_index - 1]
         return self.datasets[dataset_index][sample_index]
-    
-    def __call__(self):
-        for i in self.indexs:
-            yield self.__getitem__(i)
 
     @property
     def cummulative_size(self):
@@ -218,8 +204,6 @@ class LmdbDataset(keras.utils.Sequence):
                     self.filtered_index_list.append(index)
 
                 self.nSamples = len(self.filtered_index_list)
-            
-            self.indexs = tf.range(len(self))
 
     def __len__(self):
         return self.nSamples
@@ -260,10 +244,6 @@ class LmdbDataset(keras.utils.Sequence):
             label = re.sub(out_of_char, "", label)
 
         return (img, label)
-    
-    def __call__(self):
-        for i in self.indexs:
-            yield self.__getitem__(i)
 
 
 class SingleDataset(keras.utils.Sequence):
@@ -277,16 +257,13 @@ class SingleDataset(keras.utils.Sequence):
     def __getitem__(self, index: int):
         image_preprocessed = all_preprocessing(self.image)
         return (image_preprocessed, "Prediction")
-    
-    def __call__(self):
-        yield self.__getitem__(0)
 
 
 class RawDataset(keras.utils.Sequence):
     def __init__(self, root, opt):
         self.opt = opt
         self.image_path_list = []
-        self.indexs = tf.range(len(self))
+
         for dirpath, dirnames, filenames in os.walk(root):
             for name in filenames:
                 _, ext = os.path.splitext(name)
@@ -318,10 +295,6 @@ class RawDataset(keras.utils.Sequence):
                 img = Image.new("L", (self.opt.imgW, self.opt.imgH))
 
         return (img, self.image_path_list[index])
-    
-    def __call__(self):
-        for i in self.indexs:
-            yield self.__getitem__(i)
 
 
 class ResizeNormalize(object):

@@ -158,142 +158,69 @@ def validation(model, criterion, evaluation_loader, converter, opt):
         infer_time,
         length_of_data,
     )
-
-
+    
 def test(opt):
-    """model configuration"""
+    """ model configuration """
     converter = CTCLabelConverter(opt.character)
     opt.num_class = len(converter.character)
-
+    
     if opt.rgb:
         opt.input_channel = 3
-
+        
     model = Model(opt)
-
+    
     print("loading pretrained model from %s" % opt.saved_model)
     model = keras.models.load_model(opt.saved_model)
-    opt.exp_name = "_".join(opt.saved_model.split("/")[1:])
-
+    opt.exp_name = '_'.join(opt.saved_model.split('/')[1:])
+    
     os.makedirs(f"./result/{opt.exp_name}", exist_ok=True)
     os.system(f"cp {opt.saved_model} ./result/{opt.exp_name}/")
-
+    
     if "CTC" in opt.Prediction:
         criterion = tf.nn.ctc_loss
     else:
         # kalo gak yang sparse ya yang biasa
         # selalu gunakan ignored_index=0 disini
         criterion = custom_sparse_categorical_crossentropy
-
+        
     log = open(f"./result/{opt.exp_name}/log_evaluation.txt", "a")
-    AlignCollate_evaluation = AlignCollate(
-        imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD
-    )
+    AlignCollate_evaluation = AlignCollate(imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD)
     eval_data, eval_data_log = hierarchical_dataset(root=opt.eval_data, opt=opt)
-    evaluation_loader = tensorflow_dataloader(
-        eval_data,
-        batch_size=opt.batch_size,
-        shuffle=False,
-        num_workers=int(opt.workers),
-        collate_fn=AlignCollate_evaluation,
-    )
+    evaluation_loader = tensorflow_dataloader(eval_data, batch_size=opt.batch_size, shuffle=False, num_workers=int(opt.workers), collate_fn=AlignCollate_evaluation)
     _, accuracy_by_best_model, _, _, _, _, _, _ = validation(
-        model, criterion, evaluation_loader, converter, opt
-    )
+            model, criterion, evaluation_loader, converter, opt)
     log.write(eval_data_log)
     print(f"{accuracy_by_best_model:0.3f}")
     log.write(f"{accuracy_by_best_model:0.3f}\n")
     log.close()
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--eval_data", required=True, help="path to evaluation dataset")
-    parser.add_argument(
-        "--benchmark_all_eval",
-        action="store_true",
-        help="evaluate 10 benchmark evaluation datasets",
-    )
-    parser.add_argument(
-        "--workers", type=int, help="number of data loading workers", default=4
-    )
-    parser.add_argument("--batch_size", type=int, default=192, help="input batch size")
-    parser.add_argument(
-        "--saved_model", required=True, help="path to saved_model to evaluation"
-    )
+    parser.add_argument('--eval_data', required=True, help='path to evaluation dataset')
+    parser.add_argument('--benchmark_all_eval', action='store_true', help='evaluate 10 benchmark evaluation datasets')
+    parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
+    parser.add_argument('--batch_size', type=int, default=192, help='input batch size')
+    parser.add_argument('--saved_model', required=True, help="path to saved_model to evaluation")
     """ Data processing """
-    parser.add_argument(
-        "--batch_max_length", type=int, default=25, help="maximum-label-length"
-    )
-    parser.add_argument(
-        "--imgH", type=int, default=32, help="the height of the input image"
-    )
-    parser.add_argument(
-        "--imgW", type=int, default=100, help="the width of the input image"
-    )
-    parser.add_argument("--rgb", action="store_true", help="use rgb input")
-    parser.add_argument(
-        "--character",
-        type=str,
-        default="0123456789abcdefghijklmnopqrstuvwxyz",
-        help="character label",
-    )
-    parser.add_argument(
-        "--sensitive", action="store_true", help="for sensitive character mode"
-    )
-    parser.add_argument(
-        "--PAD",
-        action="store_true",
-        help="whether to keep ratio then pad for image resize",
-    )
-    parser.add_argument(
-        "--data_filtering_off", action="store_true", help="for data_filtering_off mode"
-    )
-    parser.add_argument(
-        "--baiduCTC", action="store_true", help="for data_filtering_off mode"
-    )
+    parser.add_argument('--batch_max_length', type=int, default=25, help='maximum-label-length')
+    parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
+    parser.add_argument('--imgW', type=int, default=100, help='the width of the input image')
+    parser.add_argument('--rgb', action='store_true', help='use rgb input')
+    parser.add_argument('--character', type=str, default='0123456789abcdefghijklmnopqrstuvwxyz', help='character label')
+    parser.add_argument('--sensitive', action='store_true', help='for sensitive character mode')
+    parser.add_argument('--PAD', action='store_true', help='whether to keep ratio then pad for image resize')
+    parser.add_argument('--data_filtering_off', action='store_true', help='for data_filtering_off mode')
+    parser.add_argument('--baiduCTC', action='store_true', help='for data_filtering_off mode')
     """ Model Architecture """
-    parser.add_argument(
-        "--Transformation",
-        type=str,
-        required=True,
-        help="Transformation stage. None|TPS",
-    )
-    parser.add_argument(
-        "--FeatureExtraction",
-        type=str,
-        required=True,
-        help="FeatureExtraction stage. VGG|RCNN|ResNet",
-    )
-    parser.add_argument(
-        "--SequenceModeling",
-        type=str,
-        required=True,
-        help="SequenceModeling stage. None|BiLSTM",
-    )
-    parser.add_argument(
-        "--Prediction", type=str, required=True, help="Prediction stage. CTC|Attn"
-    )
-    parser.add_argument(
-        "--num_fiducial",
-        type=int,
-        default=20,
-        help="number of fiducial points of TPS-STN",
-    )
-    parser.add_argument(
-        "--input_channel",
-        type=int,
-        default=1,
-        help="the number of input channel of Feature extractor",
-    )
-    parser.add_argument(
-        "--output_channel",
-        type=int,
-        default=512,
-        help="the number of output channel of Feature extractor",
-    )
-    parser.add_argument(
-        "--hidden_size", type=int, default=256, help="the size of the LSTM hidden state"
-    )
+    parser.add_argument('--Transformation', type=str, required=True, help='Transformation stage. None|TPS')
+    parser.add_argument('--FeatureExtraction', type=str, required=True, help='FeatureExtraction stage. VGG|RCNN|ResNet')
+    parser.add_argument('--SequenceModeling', type=str, required=True, help='SequenceModeling stage. None|BiLSTM')
+    parser.add_argument('--Prediction', type=str, required=True, help='Prediction stage. CTC|Attn')
+    parser.add_argument('--num_fiducial', type=int, default=20, help='number of fiducial points of TPS-STN')
+    parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel of Feature extractor')
+    parser.add_argument('--output_channel', type=int, default=512,
+                        help='the number of output channel of Feature extractor')
+    parser.add_argument('--hidden_size', type=int, default=256, help='the size of the LSTM hidden state')
 
     opt = parser.parse_args()
 
