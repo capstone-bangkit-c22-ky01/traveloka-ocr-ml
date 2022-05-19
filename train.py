@@ -23,6 +23,7 @@ def ignore_index(tensor, ignored_index=0):
 
 def train(opt):
     """dataset preparation"""
+    # show preferred channel order
     if not opt.data_filtering_off:
         print(
             "Filtering the images containing characters which are not in opt.character"
@@ -71,7 +72,6 @@ def train(opt):
         print(f"loading pretrained model from {opt.saved_model}")
         model = keras.models.load_model(opt.saved_model)
     print("Model → ")
-    model.summary()
 
     if "CTC" in opt.Prediction:
         criterion = tf.nn.ctc_loss
@@ -118,6 +118,7 @@ def train(opt):
     strategy = tf.distribute.MirroredStrategy()
     
     while(True):
+        print(train_dataset)
         image_tensors, labels = train_dataset.get_batch()
         image = image_tensors
         text, length = converter.encode(labels, batch_max_length=opt.batch_max_length)

@@ -68,12 +68,15 @@ def tensorflow_dataloader(
     collate_fn=None,
     prefetch_factor=2,
 ):
-    data = tf.data.Dataset.from_generator(dataset)
+    data = tf.data.Dataset.from_generator(dataset, output_signature=(
+        tf.TensorSpec(shape=(1, 32, 100), dtype=tf.float64),
+        tf.TensorSpec(shape=(1), dtype=tf.float64)
+    ))
     if shuffle:
-        data = data.shuffle(len(data))  # rawan error
+        data = data.shuffle(400)  # rawan error
     data = data.batch(batch_size)
-    if collate_fn:
-        data = data.map(collate_fn, num_parallel_calls=num_workers)
+    # if collate_fn:
+    #     data = data.map(lambda x, y: (collate_fn(x), y), num_parallel_calls=num_workers)
     data = data.prefetch(prefetch_factor)
     return data
 
@@ -93,18 +96,24 @@ def save_image(image_numpy, image_path):
 
 # rawan error
 class Subset(keras.utils.Sequence):
-    def __init__(self, dataset, indices: Sequence):
+    def __init__(self, dataset, indices: Sequence, batch_size=2, collate_fn=None):
         self.dataset = dataset
         self.indices = indices
+        self.batch_size = batch_size
+        self.collate_fn = collate_fn
 
     def __getitem__(self, idx):
         if isinstance(idx, list):
-            return self.dataset[[self.indices[i] for i in idx]]
+            return self.collate_fn([self.dataset[[self.indices[i] for i in idx]]])
         else:
-            self.dataset[self.indices[idx]]
+            return self.collate_fn([self.dataset[self.indices[idx]]])
 
     def __len__(self):
         return len(self.indices)
+    
+    def __call__(self):
+        for i in range(len(self)):
+            yield self.__getitem__(i)
 
 
 # rawan error
@@ -150,7 +159,13 @@ class ConcatDataset(keras.utils.Sequence):
             stacklevel=2,
         )
         return self.cumulative_sizes
+    
+    def __call__(self):
+        for i in range(len(self)):
+            yield self.__getitem__(i)
 
+# class LmdbDatasetBatch(keras.utils.Sequence):
+#     return None
 
 class LmdbDataset(keras.utils.Sequence):
     def __init__(self, root, opt):
@@ -244,6 +259,10 @@ class LmdbDataset(keras.utils.Sequence):
             label = re.sub(out_of_char, "", label)
 
         return (img, label)
+    
+    def __call__(self):
+        for i in range(len(self)):
+            yield self.__getitem__(i)
 
 
 class SingleDataset(keras.utils.Sequence):
@@ -257,6 +276,10 @@ class SingleDataset(keras.utils.Sequence):
     def __getitem__(self, index: int):
         image_preprocessed = all_preprocessing(self.image)
         return (image_preprocessed, "Prediction")
+    
+    def __call__(self):
+        for i in range(len(self)):
+            yield self.__getitem__(i)
 
 
 class RawDataset(keras.utils.Sequence):
@@ -295,6 +318,10 @@ class RawDataset(keras.utils.Sequence):
                 img = Image.new("L", (self.opt.imgW, self.opt.imgH))
 
         return (img, self.image_path_list[index])
+    
+    def __call__(self):
+        for i in range(len(self)):
+            yield self.__getitem__(i)
 
 
 class ResizeNormalize(object):
@@ -306,8 +333,10 @@ class ResizeNormalize(object):
     def __call__(self, img) -> tf.Tensor:
         img = img.resize(self.size, self.interpolation)
         img = self.toTensor(img)
-        img = tf.math.subtract(img)
-        img = tf.math.divide(img)
+        img = tf.math.subtract(img, 0.5)
+        img = tf.math.divide(img, 0.5)
+        
+        return img
 
 
 class NormalizePAD(object):
@@ -364,14 +393,14 @@ class AlignCollate(object):
                 # resized_image.save('./image_test/%d_test.jpg' % w)
 
             image_tensors = tf.concat(
-                [tf.expand_dims(t, axis=0) for t in resized_image], 0
+                resized_images, 0
             )
 
         else:
             transform = ResizeNormalize((self.imgW, self.imgH))
             image_tensors = [transform(image) for image in images]
             image_tensors = tf.concat(
-                [tf.expand_dims(t, axis=0) for t in resized_image], 0
+                image_tensors, 0
             )
 
         return image_tensors, labels
@@ -424,7 +453,7 @@ class Batch_Balanced_Dataset(object):
             dataset_split = [number_dataset, total_number_dataset - number_dataset]
             indices = range(total_number_dataset)
             _dataset, _ = [
-                Subset(_dataset, indices[offset - length : offset])
+                Subset(_dataset, indices[offset - length : offset], collate_fn=_AlignCollate)
                 for offset, length in zip(_accumulate(dataset_split), dataset_split)
             ]
             selected_d_log = f"num total samples of {selected_d}: {total_number_dataset} x {opt.total_data_usage_ratio} (total_data_usage_ratio) = {len(_dataset)}\n"
@@ -462,12 +491,13 @@ class Batch_Balanced_Dataset(object):
 
         for i, data_loader_iter in enumerate(self.data_loader_list):
             try:
-                image, text = data_loader_iter.next()
+                print(data_loader_iter.as_numpy_iterator())
+                image, text = next(data_loader_iter.as_numpy_iterator())
                 balanced_batch_images.append(image)
                 balanced_batch_texts += text
             except StopIteration:
                 self.dataloader_iter_list[i] = iter(self.data_loader_list[i])
-                image, text = self.dataloader_iter_list[i].next()
+                image, text = self.dataloader_iter_list[i]
                 balanced_batch_images.append(image)
                 balanced_batch_texts += text
             except ValueError:
