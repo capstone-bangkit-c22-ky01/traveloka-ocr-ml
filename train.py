@@ -121,7 +121,8 @@ def train(opt):
         print(train_dataset)
         image_tensors, labels = train_dataset.get_batch()
         image = image_tensors
-        text, length = converter.encode(labels, batch_max_length=opt.batch_max_length)
+        text, length = converter.encode(labels[0], batch_max_length=opt.batch_max_length)
+        print(labels)
         batch_size = image.shape[0]
         
         if "CTC" in opt.Prediction:

@@ -494,12 +494,12 @@ class Batch_Balanced_Dataset(object):
                 print(data_loader_iter.as_numpy_iterator())
                 image, text = next(data_loader_iter.as_numpy_iterator())
                 balanced_batch_images.append(image)
-                balanced_batch_texts += text
+                balanced_batch_texts.append(text[0])
             except StopIteration:
                 self.dataloader_iter_list[i] = iter(self.data_loader_list[i])
                 image, text = self.dataloader_iter_list[i]
                 balanced_batch_images.append(image)
-                balanced_batch_texts += text
+                balanced_batch_texts.append(text[0])
             except ValueError:
                 pass
 
