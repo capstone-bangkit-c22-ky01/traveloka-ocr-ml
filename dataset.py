@@ -70,7 +70,7 @@ def tensorflow_dataloader(
 ):
     data = tf.data.Dataset.from_generator(dataset, output_signature=(
         tf.TensorSpec(shape=(1, 32, 100), dtype=tf.float64),
-        tf.TensorSpec(shape=(1), dtype=tf.float64)
+        tf.TensorSpec(shape=(1), dtype=tf.string)
     ))
     if shuffle:
         data = data.shuffle(400)  # rawan error

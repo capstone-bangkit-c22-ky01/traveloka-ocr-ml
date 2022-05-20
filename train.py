@@ -61,9 +61,14 @@ def train(opt):
         converter = CTCLabelConverter(opt.character)
 
     opt.num_class = len(converter.character)
+    
     if opt.rgb:
         opt.input_channel = 3
     model = Model(opt)
+    
+    
+    opt.num_class = len(converter.character)
+    print(f"opt num_class is {opt.num_class}")  
 
     # weight initialization
     # TODO if model behave bad
@@ -86,7 +91,7 @@ def train(opt):
         optimizer = keras.optimizers.Adam(learning_rate=opt.lr, beta_1=opt.beta1, beta_2=0.999)
     else:
         optimizer = keras.optimizers.Adadelta(learning_rate=opt.lr, rho=opt.rho, epsilon=opt.eps)
-        
+    
     print("Optimizer:")
     print(optimizer)
     
@@ -99,8 +104,7 @@ def train(opt):
             opt_log += f'{str(k)}: {str(v)}\n'
         opt_log += '---------------------------------------\n'
         print(opt_log)
-        opt_file.write(opt_log)
-        
+        opt_file.write(opt_log)   
     """ start training """
     start_iter = 0
     if opt.saved_model != '':
@@ -118,12 +122,14 @@ def train(opt):
     strategy = tf.distribute.MirroredStrategy()
     
     while(True):
-        print(train_dataset)
         image_tensors, labels = train_dataset.get_batch()
         image = image_tensors
-        text, length = converter.encode(labels[0], batch_max_length=opt.batch_max_length)
-        print(labels)
+        labels = labels[0].copy()
+        labels[0] = str(labels[0], "utf-8")
+        
+        text, length = converter.encode(labels, batch_max_length=opt.batch_max_length)
         batch_size = image.shape[0]
+        print(text.shape)
         
         if "CTC" in opt.Prediction:
             with tf.GradientTape() as tape:
@@ -135,7 +141,8 @@ def train(opt):
             else:
                 preds = tf.nn.log_softmax(preds, axis=2)
                 preds = tf.transpose(preds, perm=[1, 0, 2])
-                cost = criterion(labels=preds, logits=text, label_length=preds_size, logit_length=length)
+                print(preds.shape)
+                cost = tf.nn.ctc_loss(labels=preds, logits=text, label_length=preds_size, logit_length=length)
         
         # this could be total mess
         variables = model.trainable_variables

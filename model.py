@@ -19,7 +19,6 @@ class Model(keras.models.Model):
         self.FeatureExtraction_output = opt.output_channel
         # untuk sekarang
         self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(output_size=(1))
-        opt.num_class = len(opt.character)
         print("No sequence modelling module specified")
         self.SequenModelling_output = self.FeatureExtraction_output
 
