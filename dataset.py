@@ -100,15 +100,20 @@ class ApplyCollate(keras.utils.Sequence):
     def __init__(self, dataset, collate_fn=None):
         self.dataset = dataset
         self.collate_fn = collate_fn
+        self.indexs = tf.random.shuffle(tf.range(len(self.dataset)))
 
     def __getitem__(self, idx):
-        return self.collate_fn([self.dataset])
+        # print(type(self.dataset[idx][1]))
+        return self.collate_fn([self.dataset[idx]])
 
     def __len__(self):
-        return len(self.indices)
+        return len(self.dataset)
+
+    def on_epoch_end(self):
+        self.indexs = tf.random.shuffle(self.indexs)
 
     def __call__(self):
-        yield self.__getitem__(0)
+        yield self.__getitem__(self.indexs[0])
 
 
 # rawan error
@@ -118,6 +123,7 @@ class Subset(keras.utils.Sequence):
         self.indices = indices
         self.batch_size = batch_size
         self.collate_fn = collate_fn
+        self.indexs = tf.random.shuffle(tf.range(len(self)))
 
     def __getitem__(self, idx):
         if isinstance(idx, list):
@@ -128,8 +134,11 @@ class Subset(keras.utils.Sequence):
     def __len__(self):
         return len(self.indices)
 
+    def on_epoch_end(self):
+        self.indexs = tf.random.shuffle(self.indexs)
+
     def __call__(self):
-        for i in range(len(self)):
+        for i in self.indexs:
             yield self.__getitem__(i)
 
 
@@ -510,7 +519,6 @@ class Batch_Balanced_Dataset(object):
 
         for i, data_loader_iter in enumerate(self.data_loader_list):
             try:
-                print(data_loader_iter.as_numpy_iterator())
                 image, text = next(data_loader_iter.as_numpy_iterator())
                 balanced_batch_images.append(image)
                 balanced_batch_texts.append(text[0])

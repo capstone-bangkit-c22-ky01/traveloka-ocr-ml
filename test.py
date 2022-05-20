@@ -38,6 +38,9 @@ def validation(model, criterion, evaluation_loader, converter, opt):
             shape=[batch_size, opt.batch_max_length + 1], dtype=tf.float64
         )
 
+        labels = labels[0].numpy()
+        labels[0] = str(labels[0], "utf-8")
+
         text_for_loss, length_for_loss = converter.encode(
             labels, batch_max_length=opt.batch_max_length
         )
@@ -60,14 +63,18 @@ def validation(model, criterion, evaluation_loader, converter, opt):
                     / batch_size
                 )
             else:
-                preds = tf.nn.log_softmax(preds, axis=2)
+                # preds = tf.nn.log_softmax(preds, axis=2)
                 preds = tf.transpose(preds, perm=[1, 0, 2])
+                # preds = tf.math.log(preds)
+                text_for_loss = tf.cast(text_for_loss, dtype=tf.int32)
                 cost = criterion(
-                    labels=preds,
-                    logits=text_for_loss,
-                    label_length=preds_size,
-                    logit_length=length_for_loss,
+                    logits=preds,
+                    labels=text_for_loss,
+                    logit_length=preds_size,
+                    label_length=length_for_loss,
+                    blank_index=0,
                 )
+                # cost = tf.reduce_mean(cost, axis=1)
 
             # Select max probabilty (greedy decoding) then decode index to character
             if opt.baiduCTC:
@@ -75,7 +82,7 @@ def validation(model, criterion, evaluation_loader, converter, opt):
                 preds_index = tf.reshape(preds_index, shape=[-1])
             else:
                 preds_index = tf.math.argmax(preds, axis=2)
-            preds_str = converter.decode(preds_index.data, preds_size.data)
+            preds_str = converter.decode(preds_index.numpy().T, preds_size.numpy())
 
         else:
             preds = model(image, text_for_pred, training=False)
