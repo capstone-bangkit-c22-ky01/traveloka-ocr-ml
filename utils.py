@@ -25,7 +25,7 @@ class CTCLabelConverter(object):
         """
         length = [len(s) for s in text]
         # The index used for padding (=0) would not affect the CTC loss calculation.
-        batch_text = tf.zeros(shape=[len(text), batch_max_length], dtype=tf.float64)
+        batch_text = tf.Variable(tf.zeros(shape=[len(text), batch_max_length], dtype=tf.float64))
         
         for i, t in enumerate(text):
             text = list(t)
