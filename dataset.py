@@ -96,6 +96,7 @@ def save_image(image_numpy, image_path):
     image_pil.save(image_path)
 
 
+# need to be fix
 class ApplyCollate(keras.utils.Sequence):
     def __init__(self, dataset, collate_fn=None):
         self.dataset = dataset
@@ -108,6 +109,8 @@ class ApplyCollate(keras.utils.Sequence):
 
     def __len__(self):
         return len(self.dataset)
+    
+    
 
     def on_epoch_end(self):
         self.indexs = tf.random.shuffle(self.indexs)
