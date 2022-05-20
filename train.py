@@ -66,7 +66,6 @@ def train(opt):
         opt.input_channel = 3
     model = Model(opt)
     
-    
     opt.num_class = len(converter.character)
     print(f"opt num_class is {opt.num_class}")  
 
@@ -129,26 +128,28 @@ def train(opt):
         
         text, length = converter.encode(labels, batch_max_length=opt.batch_max_length)
         batch_size = image.shape[0]
-        print(text.shape)
         
         if "CTC" in opt.Prediction:
             with tf.GradientTape() as tape:
-                preds = model(image, text)
+                preds = model(image, text, training=True)
+                
                 preds_size = tf.constant([preds.shape[1]] * batch_size)
-            if opt.baiduCTC:
-                preds = tf.transpose(preds, perm=[1, 0, 2])
-                cost = criterion(labels=preds, logits=text, label_length=preds_size, logit_length=length) / batch_size
-            else:
-                preds = tf.nn.log_softmax(preds, axis=2)
-                preds = tf.transpose(preds, perm=[1, 0, 2])
-                print(preds.shape)
-                cost = tf.nn.ctc_loss(labels=preds, logits=text, label_length=preds_size, logit_length=length)
+                if opt.baiduCTC:
+                    preds = tf.transpose(preds, perm=[1, 0, 2])
+                    cost = criterion(labels=preds, logits=text, label_length=preds_size, logit_length=length) / batch_size
+                else:
+                    # preds = tf.nn.log_softmax(preds, axis=2)
+                    preds = tf.transpose(preds, perm=[1, 0, 2])
+                    # preds = tf.math.log(preds)
+                    text = tf.cast(text, dtype=tf.int32)
+                    cost = criterion(logits=preds, labels=text, logit_length=preds_size, label_length=length, blank_index=0)
+                    # print(cost)
+                    cost = tf.reduce_mean(cost, axis=-1)
         
         # this could be total mess
-        variables = model.trainable_variables
-        gradients = tape.gradient(cost, variables)
+        gradients = tape.gradient(cost, model.trainable_variables)
         gradients, _ = tf.clip_by_global_norm(gradients, opt.grad_clip)
-        optimizer.apply_gradients(zip(gradients, variables))
+        optimizer.apply_gradients(zip(gradients, model.trainable_variables))
         
         loss_avg.add(cost)
         # validation part

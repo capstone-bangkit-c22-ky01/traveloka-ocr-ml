@@ -31,8 +31,10 @@ class CTCLabelConverter(object):
         for i, t in enumerate(text):
             text = list(t)
             text = [self.dict.get(char, -1) for char in text]
+            # print(len(text))
+            text.extend([0] * (batch_max_length - len(text)))
             output_list.append(tf.constant(text, dtype=tf.float64))
-            
+        
         batch_text = tf.stack(output_list)
         return (batch_text, tf.constant(length, dtype=tf.int32))
 
