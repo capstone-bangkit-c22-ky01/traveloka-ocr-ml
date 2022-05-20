@@ -56,7 +56,6 @@ def hierarchical_dataset(root, opt, select_data="/"):
                 dataset_list.append(dataset)
 
     concatenated_dataset = ConcatDataset(dataset_list)
-
     return concatenated_dataset, dataset_log
 
 
@@ -68,10 +67,13 @@ def tensorflow_dataloader(
     collate_fn=None,
     prefetch_factor=2,
 ):
-    data = tf.data.Dataset.from_generator(dataset, output_signature=(
-        tf.TensorSpec(shape=(1, 32, 100), dtype=tf.float64),
-        tf.TensorSpec(shape=(1), dtype=tf.string)
-    ))
+    data = tf.data.Dataset.from_generator(
+        dataset,
+        output_signature=(
+            tf.TensorSpec(shape=(1, 32, 100), dtype=tf.float64),
+            tf.TensorSpec(shape=(1), dtype=tf.string),
+        ),
+    )
     if shuffle:
         data = data.shuffle(400)  # rawan error
     data = data.batch(batch_size)
@@ -94,6 +96,21 @@ def save_image(image_numpy, image_path):
     image_pil.save(image_path)
 
 
+class ApplyCollate(keras.utils.Sequence):
+    def __init__(self, dataset, collate_fn=None):
+        self.dataset = dataset
+        self.collate_fn = collate_fn
+
+    def __getitem__(self, idx):
+        return self.collate_fn([self.dataset])
+
+    def __len__(self):
+        return len(self.indices)
+
+    def __call__(self):
+        yield self.__getitem__(0)
+
+
 # rawan error
 class Subset(keras.utils.Sequence):
     def __init__(self, dataset, indices: Sequence, batch_size=2, collate_fn=None):
@@ -110,7 +127,7 @@ class Subset(keras.utils.Sequence):
 
     def __len__(self):
         return len(self.indices)
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -159,13 +176,15 @@ class ConcatDataset(keras.utils.Sequence):
             stacklevel=2,
         )
         return self.cumulative_sizes
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
 
+
 # class LmdbDatasetBatch(keras.utils.Sequence):
 #     return None
+
 
 class LmdbDataset(keras.utils.Sequence):
     def __init__(self, root, opt):
@@ -259,7 +278,7 @@ class LmdbDataset(keras.utils.Sequence):
             label = re.sub(out_of_char, "", label)
 
         return (img, label)
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -276,7 +295,7 @@ class SingleDataset(keras.utils.Sequence):
     def __getitem__(self, index: int):
         image_preprocessed = all_preprocessing(self.image)
         return (image_preprocessed, "Prediction")
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -318,7 +337,7 @@ class RawDataset(keras.utils.Sequence):
                 img = Image.new("L", (self.opt.imgW, self.opt.imgH))
 
         return (img, self.image_path_list[index])
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -335,7 +354,7 @@ class ResizeNormalize(object):
         img = self.toTensor(img)
         img = tf.math.subtract(img, 0.5)
         img = tf.math.divide(img, 0.5)
-        
+
         return img
 
 
@@ -392,16 +411,12 @@ class AlignCollate(object):
                 resized_images.append(transform(resized_image))
                 # resized_image.save('./image_test/%d_test.jpg' % w)
 
-            image_tensors = tf.concat(
-                resized_images, 0
-            )
+            image_tensors = tf.concat(resized_images, 0)
 
         else:
             transform = ResizeNormalize((self.imgW, self.imgH))
             image_tensors = [transform(image) for image in images]
-            image_tensors = tf.concat(
-                image_tensors, 0
-            )
+            image_tensors = tf.concat(image_tensors, 0)
 
         return image_tensors, labels
 
@@ -453,7 +468,11 @@ class Batch_Balanced_Dataset(object):
             dataset_split = [number_dataset, total_number_dataset - number_dataset]
             indices = range(total_number_dataset)
             _dataset, _ = [
-                Subset(_dataset, indices[offset - length : offset], collate_fn=_AlignCollate)
+                Subset(
+                    _dataset,
+                    indices[offset - length : offset],
+                    collate_fn=_AlignCollate,
+                )
                 for offset, length in zip(_accumulate(dataset_split), dataset_split)
             ]
             selected_d_log = f"num total samples of {selected_d}: {total_number_dataset} x {opt.total_data_usage_ratio} (total_data_usage_ratio) = {len(_dataset)}\n"

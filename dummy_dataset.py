@@ -34,7 +34,9 @@ def _accumulate(iterable, fn=lambda x, y: x + y):
         yield total
 
 
-def hierarchical_dataset(root, opt, select_data="/", batch_size=4, shuffle=True, collate_fn=None):
+def hierarchical_dataset(
+    root, opt, select_data="/", batch_size=4, shuffle=True, collate_fn=None
+):
     """select_data='/' contains all sub-directory of root directory"""
     dataset_list = []
     dataset_log = f"dataset_root:    {root}\t dataset: {select_data[0]}"
@@ -49,13 +51,21 @@ def hierarchical_dataset(root, opt, select_data="/", batch_size=4, shuffle=True,
                     break
 
             if select_flag:
-                dataset = LmdbDataset(dirpath, opt, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
+                dataset = LmdbDataset(
+                    dirpath,
+                    opt,
+                    batch_size=batch_size,
+                    shuffle=shuffle,
+                    collate_fn=collate_fn,
+                )
                 sub_dataset_log = f"sub-directory:\t/{os.path.relpath(dirpath, root)}\t num samples: {len(dataset)}"
                 print(sub_dataset_log)
                 dataset_log += f"{sub_dataset_log}\n"
                 dataset_list.append(dataset)
 
-    concatenated_dataset = ConcatDataset(dataset_list, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
+    concatenated_dataset = ConcatDataset(
+        dataset_list, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn
+    )
 
     return concatenated_dataset, dataset_log
 
@@ -81,13 +91,14 @@ def hierarchical_dataset(root, opt, select_data="/", batch_size=4, shuffle=True,
 #     data = data.prefetch(tf.data.AUTOTUNE)
 #     return data
 
+
 def tensorflow_dataloader(
-    dataset, 
+    dataset,
     batch_size=4,
     shuffle=False,
     num_workers=0,
     collate_fn=None,
-    prefetch_factor=2
+    prefetch_factor=2,
 ):
     return dataset()
 
@@ -107,7 +118,9 @@ def save_image(image_numpy, image_path):
 
 # rawan error
 class Subset(keras.utils.Sequence):
-    def __init__(self, dataset, indices: Sequence, batch_size=4, shuffle=True, collate_fn=None):
+    def __init__(
+        self, dataset, indices: Sequence, batch_size=4, shuffle=True, collate_fn=None
+    ):
         self.dataset = dataset
         self.indices = indices
         self.indexes = tf.range(len(self.indices))
@@ -122,17 +135,19 @@ class Subset(keras.utils.Sequence):
             self.dataset
 
     def __getitem__index(self, index):
-        batch_indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+        batch_indexes = self.indexes[
+            index * self.batch_size : (index + 1) * self.batch_size
+        ]
         temp_result = [self.__getitem__index(i) for i in batch_indexes]
         if self.collate_fn:
             img_batch, label_batch = self.collate_fn(temp_result)
         else:
             img_batch, label_batch = zip(*temp_result)
         return img_batch, label_batch
-    
+
     def __len__(self):
         return len(self.indices)
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -148,8 +163,14 @@ class ConcatDataset(keras.utils.Sequence):
             r.append(l + s)
             s += l
         return r
-    
-    def __init__(self, datasets: keras.utils.Sequence, batch_size=4, shuffle=True, collate_fn=None):
+
+    def __init__(
+        self,
+        datasets: keras.utils.Sequence,
+        batch_size=4,
+        shuffle=True,
+        collate_fn=None,
+    ):
         super(ConcatDataset, self).__init__()
         self.datasets = list(datasets)
         assert len(self.datasets) > 0, "datasets should not be an empty iterable"
@@ -158,7 +179,7 @@ class ConcatDataset(keras.utils.Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.collate_fn = collate_fn
-        
+
     def __len__(self):
         return self.cumulative_sizes[-1] // self.batch_size
 
@@ -176,16 +197,18 @@ class ConcatDataset(keras.utils.Sequence):
         else:
             sample_index = index - self.cumulative_sizes[dataset_index - 1]
         return self.datasets[dataset_index][sample_index]
-    
+
     def __getitem___(self, index):
-        batch_indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+        batch_indexes = self.indexes[
+            index * self.batch_size : (index + 1) * self.batch_size
+        ]
         temp_result = [self.__getitem__index(i) for i in batch_indexes]
         if self.collate_fn:
             img_batch, label_batch = self.collate_fn(temp_result)
         else:
             img_batch, label_batch = zip(*temp_result)
         return img_batch, label_batch
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -252,7 +275,7 @@ class LmdbDataset(keras.utils.Sequence):
                     self.filtered_index_list.append(index)
 
                 self.nSamples = len(self.filtered_index_list)
-            
+
         self.indexes = tf.range(self.nSamples)
         self.batch_size = batch_size
         self.shuffle = shuffle
@@ -260,14 +283,16 @@ class LmdbDataset(keras.utils.Sequence):
 
     def __len__(self):
         return self.nSamples // self.batch_size
-    
+
     def on_epoch_end(self):
         self.indexes = tf.range(len(self.nSamples))
         if self.shuffle:
             self.indexes = tf.random.shuffle(self.indexes)
-            
+
     def __getitem__(self, index):
-        batch_indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+        batch_indexes = self.indexes[
+            index * self.batch_size : (index + 1) * self.batch_size
+        ]
         temp_result = [self.__getitem__index(i) for i in batch_indexes]
         if self.collate_fn:
             img_batch, label_batch = self.collate_fn(temp_result)
@@ -311,7 +336,7 @@ class LmdbDataset(keras.utils.Sequence):
             label = re.sub(out_of_char, "", label)
 
         return (img, label)
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -328,7 +353,7 @@ class SingleDataset(keras.utils.Sequence):
     def __getitem__(self, index: int):
         image_preprocessed = all_preprocessing(self.image)
         return (image_preprocessed, "Prediction")
-    
+
     def __call__(self):
         yield self.__getitem__(0)
 
@@ -353,16 +378,17 @@ class RawDataset(keras.utils.Sequence):
 
     def __len__(self):
         return self.nSamples // self.batch_size
-    
+
     def __getitem__(self, index):
-        batch_indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+        batch_indexes = self.indexes[
+            index * self.batch_size : (index + 1) * self.batch_size
+        ]
         temp_result = [self.__getitem__index(i) for i in batch_indexes]
         if self.collate_fn:
             img_batch, label_batch = self.collate_fn(temp_result)
         else:
             img_batch, label_batch = zip(*temp_result)
         return img_batch, label_batch
-        
 
     def __getitem__index(self, index):
         try:
@@ -382,7 +408,7 @@ class RawDataset(keras.utils.Sequence):
                 img = Image.new("L", (self.opt.imgW, self.opt.imgH))
 
         return (img, self.image_path_list[index])
-    
+
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
@@ -399,7 +425,7 @@ class ResizeNormalize(object):
         img = self.toTensor(img)
         img = tf.math.subtract(img, 0.5)
         img = tf.math.divide(img, 0.5)
-        
+
         return img
 
 
@@ -501,7 +527,10 @@ class Batch_Balanced_Dataset(object):
             print(dashed_line)
             log.write(dashed_line + "\\n")
             _dataset, _dataset_log = hierarchical_dataset(
-                root=opt.train_data, opt=opt, select_data=[selected_d], collate_fn=_AlignCollate
+                root=opt.train_data,
+                opt=opt,
+                select_data=[selected_d],
+                collate_fn=_AlignCollate,
             )
             print(next(iter(_dataset)))
             total_number_dataset = len(_dataset)
@@ -552,7 +581,7 @@ class Batch_Balanced_Dataset(object):
             try:
                 print(data_loader_iter)
                 image, text = next(data_loader_iter)
-                
+
                 balanced_batch_images.append(image)
                 balanced_batch_texts += text
             except StopIteration:
