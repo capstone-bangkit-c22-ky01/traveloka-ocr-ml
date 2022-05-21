@@ -61,7 +61,7 @@ def hierarchical_dataset(root, opt, select_data="/"):
 
 def tensorflow_dataloader(
     dataset,
-    batch_size=4,
+    batch_size=2,
     shuffle=False,
     num_workers=0,
     collate_fn=None,
@@ -74,6 +74,7 @@ def tensorflow_dataloader(
             tf.TensorSpec(shape=(1), dtype=tf.string),
         ),
     )
+    data = data.batch(batch_size)
     data = data.prefetch(prefetch_factor)
     return data
 
