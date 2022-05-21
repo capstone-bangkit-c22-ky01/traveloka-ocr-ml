@@ -45,12 +45,10 @@ class CTCLabelConverter(object):
         texts = []
         for index, l in enumerate(length):
             t = text_index[index, :]
-
             char_list = []
             for i in range(l):
                 if t[i] != 0 and (not (i > 0 and t[i - 1] == t[i])):
                     char_list.append(self.character[t[i]])
-
             text = "".join(char_list)
 
             texts.append(text)

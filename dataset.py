@@ -70,7 +70,7 @@ def tensorflow_dataloader(
     data = tf.data.Dataset.from_generator(
         dataset,
         output_signature=(
-            tf.TensorSpec(shape=(1, 32, 100), dtype=tf.float64),
+            tf.TensorSpec(shape=(32, 100, 1), dtype=tf.float64),
             tf.TensorSpec(shape=(1), dtype=tf.string),
         ),
     )
@@ -355,8 +355,6 @@ class ResizeNormalize(object):
         img = img.resize(self.size, self.interpolation)
         img = self.toTensor(img)
         img = tf.math.divide(img, 255.0)
-        img = tf.math.multiply(img, 2.0)
-        img = tf.math.subtract(img, 1.0)
         return img
 
 
@@ -369,8 +367,6 @@ class NormalizePAD(object):
 
     def __call__(self, image: Image) -> tf.Tensor:
         img = self.toTensor(image)
-        # img = tf.math.subtract(img, 0.5)
-        img = tf.math.divide(img, 255.0)
         c, h, w = img.shape
         Pad_img = tf.zeros(shape=self.max_size)
         Pad_img[:, :, :w] = img

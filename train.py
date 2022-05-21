@@ -9,6 +9,7 @@ from test import validation
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+from PIL import Image
 
 from dataset import (
     AlignCollate,
@@ -133,6 +134,7 @@ def train(opt):
     while True:
         image_tensors, labels = train_dataset.get_batch()
         image = image_tensors
+        # image = tf.transpose(image, perm=[0, 3, 1, 2])
         labels = labels[0].copy()
         labels[0] = str(labels[0], "utf-8")
 
@@ -143,7 +145,7 @@ def train(opt):
             with tf.GradientTape() as tape:
                 preds = model(image, text, training=True)
 
-                preds_size = tf.constant([preds.shape[1]] * batch_size)
+                preds_size = tf.constant([preds.shape[2]] * batch_size)
                 if opt.baiduCTC:
                     preds = tf.transpose(preds, perm=[1, 0, 2])
                     cost = (
@@ -158,6 +160,7 @@ def train(opt):
                 else:
                     # preds = tf.nn.log_softmax(preds, axis=2)
                     preds = tf.transpose(preds, perm=[1, 0, 2])
+                    
                     text = tf.cast(text, dtype=tf.int32)
                     cost = criterion(
                         logits=preds,
@@ -166,9 +169,7 @@ def train(opt):
                         label_length=length,
                         blank_index=0,
                     )
-                    cost = tf.math.log(cost)
                     cost = tf.reduce_mean(cost, axis=-1)
-
         # this could be total mess
         gradients = tape.gradient(cost, model.trainable_variables)
         gradients, _ = tf.clip_by_global_norm(gradients, opt.grad_clip)

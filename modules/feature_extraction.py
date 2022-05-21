@@ -25,7 +25,7 @@ class VGG_FeatureExtractor(keras.models.Model):
                     kernel_size=3,
                     strides=1,
                     padding="SAME",
-                    input_shape=(1, 32, 100),
+                    input_shape=(32, 100, 1),
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=2),

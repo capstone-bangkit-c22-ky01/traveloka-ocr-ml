@@ -49,10 +49,9 @@ def validation(model, criterion, evaluation_loader, converter, opt):
         if "CTC" in opt.Prediction:
             preds = model(image, text_for_pred)
             forward_time = time.time() - start_time
-
             preds_size = tf.constant([preds.shape[1]] * batch_size, dtype=tf.int32)
             if opt.baiduCTC:
-                preds = tf.transpose(preds, perm=[1, 0, 2])
+                # preds = tf.transpose(preds, perm=[1, 0, 2])
                 cost = (
                     criterion(
                         labels=preds,
@@ -93,6 +92,8 @@ def validation(model, criterion, evaluation_loader, converter, opt):
               openfile.write(f"preds_size → {preds_size.numpy()}")
               openfile.write("\n")
               openfile.write(f"preds_str → {preds_str}")
+              openfile.write("\n")
+              openfile.write(f"preds → {preds}")
               openfile.write("\n")
         else:
             preds = model(image, text_for_pred, training=False)
