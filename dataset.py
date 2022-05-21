@@ -61,7 +61,7 @@ def hierarchical_dataset(root, opt, select_data="/"):
 
 def tensorflow_dataloader(
     dataset,
-    batch_size=4,
+    batch_size=2,
     shuffle=False,
     num_workers=0,
     collate_fn=None,
@@ -287,16 +287,22 @@ class LmdbDataset(keras.utils.Sequence):
 
 
 class SingleDataset(keras.utils.Sequence):
-    def __init__(self, image, opt):
+    def __init__(self, image, opt, left, top, right, bottom, collate_fn):
         self.opt = opt
         self.image = image
+        self.left = left
+        self.top = top
+        self.right = right
+        self.bottom = bottom
+        self.collate_fn = collate_fn
 
     def __len__(self):
         return 1
 
     def __getitem__(self, index: int):
-        image_preprocessed = all_preprocessing(self.image)
-        return (image_preprocessed, "Prediction")
+        image_preprocessed = all_preprocessing(self.image, self.left, self.top, self.right, self.bottom)
+        image_preprocessed = self.collate_fn([(image_preprocessed, "Prediction")])
+        return image_preprocessed
 
     def __call__(self):
         for i in range(len(self)):
