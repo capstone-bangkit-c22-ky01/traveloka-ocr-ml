@@ -74,6 +74,7 @@ def tensorflow_dataloader(
             tf.TensorSpec(shape=(1), dtype=tf.string),
         ),
     )
+    data = data.batch(batch_size)
     data = data.prefetch(prefetch_factor)
     return data
 

@@ -74,7 +74,9 @@ def validation(model, criterion, evaluation_loader, converter, opt):
                     label_length=length_for_loss,
                     blank_index=0,
                 )
-                # cost = tf.reduce_mean(cost, axis=1)
+                
+                cost = tf.math.log(cost)
+                cost = tf.reduce_mean(cost)
 
             # Select max probabilty (greedy decoding) then decode index to character
             if opt.baiduCTC:
@@ -83,7 +85,15 @@ def validation(model, criterion, evaluation_loader, converter, opt):
             else:
                 preds_index = tf.math.argmax(preds, axis=2)
             preds_str = converter.decode(preds_index.numpy().T, preds_size.numpy())
-
+            with open("decode_log.txt", "a") as openfile:
+              openfile.write("===========" * 10)
+              openfile.write("\n")
+              openfile.write(f"preds_index → {preds_index.numpy().T}")
+              openfile.write("\n")
+              openfile.write(f"preds_size → {preds_size.numpy()}")
+              openfile.write("\n")
+              openfile.write(f"preds_str → {preds_str}")
+              openfile.write("\n")
         else:
             preds = model(image, text_for_pred, training=False)
             forward_time = time.time() - start_time
