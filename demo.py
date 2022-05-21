@@ -9,7 +9,7 @@ from dataset import (AlignCollate, RawDataset, SingleDataset,
                      tensorflow_dataloader)
 from model import Model
 from preprocess_image import crop_image
-from utils import AttnLabelConverter, CTCLabelConverter
+from utils import CTCLabelConverter
 
 device = "cpu"
 
@@ -17,8 +17,6 @@ def demo(opt):
     """model configuration"""
     if "CTC" in opt.Prediction:
         converter = CTCLabelConverter(opt.character)
-    else:
-        converter = AttnLabelConverter(opt.character)
     opt.num_class = len(converter.character)
     if opt.rgb:
         opt.input_channel = 3
@@ -32,15 +30,9 @@ def demo(opt):
         imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD
     )
     left_image, top_image, right_image, bottom_image = 115, 86, 390, 131
-    image = crop_image(
-        Image.open(opt.image_path),
-        left=left_image,
-        top=top_image,
-        right=right_image,
-        bottom=bottom_image,
-    )
     demo_data = SingleDataset(
-        image=Image.open(opt.image_path), opt=opt
+        image=Image.open(opt.image_path), opt=opt, left=left_image, top=top_image, right=right_image, bottom=bottom_image
+    , collate_fn=AlignCollate_demo
     )
     demo_loader = tensorflow_dataloader(
         demo_data, 
@@ -48,10 +40,10 @@ def demo(opt):
         shuffle=True,
         num_workers=int(opt.workers),
         collate_fn=AlignCollate_demo)
-    image, text_for_pred = next(demo_loader)
+    image, text_for_pred = next(demo_loader.as_numpy_iterator())
     print(image.shape)
     batch_size = image.shape[0]
-    text_for_pred = tf.zeros(shape=(batch_size, opt.batch_max_length + 1), dtype=tf.float64)
+    text_for_pred = tf.zeros(shape=(batch_size, opt.batch_max_length), dtype=tf.float64)
     length_for_pred = tf.constant([opt.batch_max_length] * batch_size, dtype=tf.int32)
     if "CTC" in opt.Prediction:
         preds = model(image, text_for_pred)
@@ -117,23 +109,23 @@ if __name__ == "__main__":
     parser.add_argument(
         "--Transformation",
         type=str,
-        default="TPS",
+        default="None",
         help="Transformation stage. None|TPS",
     )
     parser.add_argument(
         "--FeatureExtraction",
         type=str,
-        default="ResNet",
+        default="VGG",
         help="FeatureExtraction stage. VGG|RCNN|ResNet",
     )
     parser.add_argument(
         "--SequenceModeling",
         type=str,
-        default="BiLSTM",
+        default="None",
         help="SequenceModeling stage. None|BiLSTM",
     )
     parser.add_argument(
-        "--Prediction", type=str, default="Attn", help="Prediction stage. CTC|Attn"
+        "--Prediction", type=str, default="CTC", help="Prediction stage. CTC|Attn"
     )
     parser.add_argument(
         "--num_fiducial",
