@@ -74,11 +74,6 @@ def tensorflow_dataloader(
             tf.TensorSpec(shape=(1), dtype=tf.string),
         ),
     )
-    if shuffle:
-        data = data.shuffle(400)  # rawan error
-    data = data.batch(batch_size)
-    # if collate_fn:
-    #     data = data.map(lambda x, y: (collate_fn(x), y), num_parallel_calls=num_workers)
     data = data.prefetch(prefetch_factor)
     return data
 
@@ -110,8 +105,6 @@ class ApplyCollate(keras.utils.Sequence):
     def __len__(self):
         return len(self.dataset)
     
-    
-
     def on_epoch_end(self):
         self.indexs = tf.random.shuffle(self.indexs)
 
@@ -192,10 +185,6 @@ class ConcatDataset(keras.utils.Sequence):
     def __call__(self):
         for i in range(len(self)):
             yield self.__getitem__(i)
-
-
-# class LmdbDatasetBatch(keras.utils.Sequence):
-#     return None
 
 
 class LmdbDataset(keras.utils.Sequence):
@@ -364,9 +353,9 @@ class ResizeNormalize(object):
     def __call__(self, img) -> tf.Tensor:
         img = img.resize(self.size, self.interpolation)
         img = self.toTensor(img)
-        img = tf.math.subtract(img, 0.5)
-        img = tf.math.divide(img, 0.5)
-
+        img = tf.math.divide(img, 255.0)
+        img = tf.math.multiply(img, 2.0)
+        img = tf.math.subtract(img, 1.0)
         return img
 
 
@@ -379,9 +368,8 @@ class NormalizePAD(object):
 
     def __call__(self, image: Image) -> tf.Tensor:
         img = self.toTensor(image)
-        img = tf.math.subtract(img)
-        img = tf.math.divide(img)
-
+        # img = tf.math.subtract(img, 0.5)
+        img = tf.math.divide(img, 255.0)
         c, h, w = img.shape
         Pad_img = tf.zeros(shape=self.max_size)
         Pad_img[:, :, :w] = img

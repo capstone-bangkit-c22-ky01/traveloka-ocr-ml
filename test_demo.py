@@ -1,13 +1,36 @@
 import argparse
+import os
+import random
+import string
+import sys
+import time
+from test import validation
 
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+
+from dataset import (AlignCollate, ApplyCollate, Batch_Balanced_Dataset,
+                     hierarchical_dataset, tensorflow_dataloader)
 from model import Model
+from modules.custom import custom_sparse_categorical_crossentropy
+from utils import Averager, CTCLabelConverter, CTCLabelConverterForBaiduWarpctc
 
 
-def main():
+def main(opt):
+    opt.select_data = opt.select_data.split("-")
+    opt.batch_ratio = opt.batch_ratio.split("-")
+    train_dataset = Batch_Balanced_Dataset(opt)
+    a = train_dataset.get_batch()
+    
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--exp_name", help="Where to store logs and models")
-    # parser.add_argument('--train_data', required=True, help='path to training dataset')
-    # parser.add_argument('--valid_data', required=True, help='path to validation dataset')
+    parser.add_argument("--train_data", required=True, help="path to training dataset")
+    parser.add_argument(
+        "--valid_data", required=True, help="path to validation dataset"
+    )
     parser.add_argument(
         "--manualSeed", type=int, default=1111, help="for random seed setting"
     )
@@ -79,7 +102,10 @@ def main():
     )
     parser.add_argument("--rgb", action="store_true", help="use rgb input")
     parser.add_argument(
-        "--character", type=str, default="0123456789", help="character label"
+        "--character",
+        type=str,
+        default="0123456789abcdefghijklmnopqrstuvwxyz",
+        help="character label",
     )
     parser.add_argument(
         "--sensitive", action="store_true", help="for sensitive character mode"
@@ -93,6 +119,27 @@ def main():
         "--data_filtering_off", action="store_true", help="for data_filtering_off mode"
     )
     """ Model Architecture """
+    parser.add_argument(
+        "--Transformation",
+        type=str,
+        required=True,
+        help="Transformation stage. None|TPS",
+    )
+    parser.add_argument(
+        "--FeatureExtraction",
+        type=str,
+        required=True,
+        help="FeatureExtraction stage. VGG|RCNN|ResNet",
+    )
+    parser.add_argument(
+        "--SequenceModeling",
+        type=str,
+        required=True,
+        help="SequenceModeling stage. None|BiLSTM",
+    )
+    parser.add_argument(
+        "--Prediction", type=str, required=True, help="Prediction stage. CTC|Attn"
+    )
     parser.add_argument(
         "--num_fiducial",
         type=int,
@@ -116,10 +163,42 @@ def main():
     )
 
     opt = parser.parse_args()
-    model = Model(opt)
-    model.build(input_shape=[[1, 1, 32, 100]])
-    print(model.summary())
 
+    if not opt.exp_name:
+        opt.exp_name = f"{opt.Transformation}-{opt.FeatureExtraction}-{opt.SequenceModeling}-{opt.Prediction}"
+        opt.exp_name += f"-Seed{opt.manualSeed}"
+        # print(opt.exp_name)
 
-if __name__ == "__main__":
-    main()
+    os.makedirs(f"./saved_models/{opt.exp_name}", exist_ok=True)
+
+    """ vocab / character number configuration """
+    if opt.sensitive:
+        # opt.character += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        opt.character = string.printable[:-6]  # same with ASTER setting (use 94 char).
+
+    """ Seed and GPU setting """
+    # print("Random Seed: ", opt.manualSeed)
+    random.seed(opt.manualSeed)
+    np.random.seed(opt.manualSeed)
+    tf.random.set_seed(opt.manualSeed)
+
+    opt.num_gpu = len(tf.config.list_physical_devices("GPU"))
+    # print('device count', opt.num_gpu)
+    if opt.num_gpu > 1:
+        print("------ Use multi-GPU setting ------")
+        print(
+            "if you stuck too long time with multi-GPU setting, try to set --workers 0"
+        )
+        # check multi-GPU issue https://github.com/clovaai/deep-text-recognition-benchmark/issues/1
+        opt.workers = opt.workers * opt.num_gpu
+        opt.batch_size = opt.batch_size * opt.num_gpu
+
+        """ previous version
+        print('To equlize batch stats to 1-GPU setting, the batch_size is multiplied with num_gpu and multiplied batch_size is ', opt.batch_size)
+        opt.batch_size = opt.batch_size * opt.num_gpu
+        print('To equalize the number of epochs to 1-GPU setting, num_iter is divided with num_gpu by default.')
+        If you dont care about it, just commnet out these line.)
+        opt.num_iter = int(opt.num_iter / opt.num_gpu)
+        """
+    
+    main(opt)
