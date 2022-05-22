@@ -133,11 +133,20 @@ def train(opt):
 
     while True:
         image_tensors, labels = train_dataset.get_batch()
+        print(image_tensors.shape)
+        image_tensors_numpy = (image_tensors.numpy() + 1) / 2
+        image_tensors_numpy = image_tensors_numpy * 255.0
+        image_tensors_numpy = image_tensors_numpy.astype(np.uint8)
+        image_tensors_numpy = np.squeeze(image_tensors_numpy, axis=-1)
+        print(image_tensors_numpy[0].shape)
+        print(np.max(image_tensors_numpy))
+        print(np.min(image_tensors_numpy))
+        Image.fromarray(image_tensors_numpy[0]).show()
+        print(abc)
         image = image_tensors
         # image = tf.transpose(image, perm=[0, 3, 1, 2])
         labels = labels[0].copy()
         labels[0] = str(labels[0], "utf-8")
-
         text, length = converter.encode(labels, batch_max_length=opt.batch_max_length)
         batch_size = image.shape[0]
 
@@ -169,6 +178,7 @@ def train(opt):
                         label_length=length,
                         blank_index=0,
                     )
+                    cost = tf.math.log(cost)
                     cost = tf.reduce_mean(cost, axis=-1)
         # this could be total mess
         gradients = tape.gradient(cost, model.trainable_variables)

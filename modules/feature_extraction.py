@@ -25,21 +25,22 @@ class VGG_FeatureExtractor(keras.models.Model):
                     kernel_size=3,
                     strides=1,
                     padding="SAME",
+                    kernel_initializer='he_uniform',
                     input_shape=(32, 100, 1),
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=2),
                 layers.Conv2D(
-                    self.output_channel[1], kernel_size=3, strides=1, padding="SAME"
+                    self.output_channel[1], kernel_size=3, kernel_initializer='he_uniform', strides=1, padding="SAME"
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=2),
                 layers.Conv2D(
-                    self.output_channel[2], kernel_size=3, strides=1, padding="SAME"
+                    self.output_channel[2], kernel_size=3, kernel_initializer='he_uniform', strides=1, padding="SAME"
                 ),
                 layers.ReLU(),
                 layers.Conv2D(
-                    self.output_channel[2], kernel_size=3, strides=1, padding="SAME"
+                    self.output_channel[2], kernel_size=3, kernel_initializer='he_uniform', strides=1, padding="SAME"
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=(2, 1), strides=(2, 1)),
@@ -47,7 +48,7 @@ class VGG_FeatureExtractor(keras.models.Model):
                     self.output_channel[3],
                     kernel_size=3,
                     strides=1,
-                    padding="SAME",
+                    padding="SAME", kernel_initializer='he_uniform',
                     use_bias=False,
                 ),
                 layers.BatchNormalization(),
@@ -56,14 +57,14 @@ class VGG_FeatureExtractor(keras.models.Model):
                     self.output_channel[3],
                     kernel_size=3,
                     strides=1,
-                    padding="SAME",
+                    padding="SAME", kernel_initializer='he_uniform', 
                     use_bias=False,
                 ),
                 layers.BatchNormalization(),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=(2, 1), strides=(2, 1)),
                 layers.Conv2D(
-                    self.output_channel[3], kernel_size=2, strides=1, padding="VALID"
+                    self.output_channel[3], kernel_size=2, kernel_initializer='he_uniform', strides=1, padding="VALID"
                 ),
                 layers.ReLU(),
             ]

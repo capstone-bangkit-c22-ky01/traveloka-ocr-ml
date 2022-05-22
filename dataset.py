@@ -110,6 +110,7 @@ class ApplyCollate(keras.utils.Sequence):
         self.indexs = tf.random.shuffle(self.indexs)
 
     def __call__(self):
+        self.indexs = tf.random.shuffle(self.indexs)
         yield self.__getitem__(self.indexs[0])
 
 
@@ -135,8 +136,9 @@ class Subset(keras.utils.Sequence):
         self.indexs = tf.random.shuffle(self.indexs)
 
     def __call__(self):
-        for i in self.indexs:
-            yield self.__getitem__(i)
+        for i in range(len(self)):
+            self.indexs = tf.random.shuffle(self.indexs)
+            yield self.__getitem__(self.indexs[i])
 
 
 # rawan error
@@ -361,6 +363,8 @@ class ResizeNormalize(object):
         img = img.resize(self.size, self.interpolation)
         img = self.toTensor(img)
         img = tf.math.divide(img, 255.0)
+        img = tf.math.multiply(img, 2)
+        img = tf.math.subtract(img, 1)
         return img
 
 
