@@ -73,8 +73,7 @@ def validation(model, criterion, evaluation_loader, converter, opt):
                     label_length=length_for_loss,
                     blank_index=0,
                 )
-                
-                cost = tf.math.log(cost)
+                cost = tf.where(tf.math.is_inf(cost), tf.zeros_like(cost), cost)
                 cost = tf.reduce_mean(cost)
 
             # Select max probabilty (greedy decoding) then decode index to character
