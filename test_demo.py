@@ -10,8 +10,13 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
-from dataset import (AlignCollate, ApplyCollate, Batch_Balanced_Dataset,
-                     hierarchical_dataset, tensorflow_dataloader)
+from dataset import (
+    AlignCollate,
+    ApplyCollate,
+    Batch_Balanced_Dataset,
+    hierarchical_dataset,
+    tensorflow_dataloader,
+)
 from model import Model
 from modules.custom import custom_sparse_categorical_crossentropy
 from utils import Averager, CTCLabelConverter, CTCLabelConverterForBaiduWarpctc
@@ -22,7 +27,7 @@ def main(opt):
     opt.batch_ratio = opt.batch_ratio.split("-")
     train_dataset = Batch_Balanced_Dataset(opt)
     a = train_dataset.get_batch()
-    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -200,5 +205,5 @@ if __name__ == "__main__":
         If you dont care about it, just commnet out these line.)
         opt.num_iter = int(opt.num_iter / opt.num_gpu)
         """
-    
+
     main(opt)

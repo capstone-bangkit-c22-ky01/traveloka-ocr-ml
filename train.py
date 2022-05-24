@@ -159,7 +159,7 @@ def train(opt):
                 else:
                     # preds = tf.nn.log_softmax(preds, axis=2)
                     preds = tf.transpose(preds, perm=[1, 0, 2])
-                    
+
                     text = tf.cast(text, dtype=tf.int32)
                     cost = criterion(
                         logits=preds,
@@ -168,7 +168,7 @@ def train(opt):
                         label_length=length,
                         blank_index=0,
                     )
-                    #zero_infinity
+                    # zero_infinity
                     cost = tf.where(tf.math.is_inf(cost), tf.zeros_like(cost), cost)
                     # cost = tf.math.log(cost)
                     cost = tf.reduce_mean(cost, axis=-1)

@@ -5,13 +5,13 @@ import tensorflow as tf
 from PIL import Image
 from tensorflow import keras
 
-from dataset import (AlignCollate, RawDataset, SingleDataset,
-                     tensorflow_dataloader)
+from dataset import AlignCollate, RawDataset, SingleDataset, tensorflow_dataloader
 from model import Model
 from preprocess_image import crop_image
 from utils import CTCLabelConverter
 
 device = "cpu"
+
 
 def demo(opt):
     """model configuration"""
@@ -31,15 +31,21 @@ def demo(opt):
     )
     left_image, top_image, right_image, bottom_image = 115, 86, 390, 131
     demo_data = SingleDataset(
-        image=Image.open(opt.image_path), opt=opt, left=left_image, top=top_image, right=right_image, bottom=bottom_image
-    , collate_fn=AlignCollate_demo
+        image=Image.open(opt.image_path),
+        opt=opt,
+        left=left_image,
+        top=top_image,
+        right=right_image,
+        bottom=bottom_image,
+        collate_fn=AlignCollate_demo,
     )
     demo_loader = tensorflow_dataloader(
-        demo_data, 
+        demo_data,
         batch_size=opt.batch_size,
         shuffle=True,
         num_workers=int(opt.workers),
-        collate_fn=AlignCollate_demo)
+        collate_fn=AlignCollate_demo,
+    )
     image, text_for_pred = next(demo_loader.as_numpy_iterator())
     print(image.shape)
     batch_size = image.shape[0]
@@ -63,7 +69,6 @@ def demo(opt):
 
     preds_prob = F.softmax(preds, dim=2)
     preds_max_prob, _ = preds_prob.max(dim=2)
-
 
     print(f"{preds_str:25s}")
 

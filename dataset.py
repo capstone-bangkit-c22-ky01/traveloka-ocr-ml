@@ -105,7 +105,7 @@ class ApplyCollate(keras.utils.Sequence):
 
     def __len__(self):
         return len(self.dataset)
-    
+
     def on_epoch_end(self):
         self.indexs = tf.random.shuffle(self.indexs)
 
@@ -302,7 +302,9 @@ class SingleDataset(keras.utils.Sequence):
         return 1
 
     def __getitem__(self, index: int):
-        image_preprocessed = all_preprocessing(self.image, self.left, self.top, self.right, self.bottom)
+        image_preprocessed = all_preprocessing(
+            self.image, self.left, self.top, self.right, self.bottom
+        )
         image_preprocessed = self.collate_fn([(image_preprocessed, "Prediction")])
         return image_preprocessed
 

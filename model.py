@@ -5,6 +5,7 @@ from tensorflow.keras import layers
 
 from modules.feature_extraction import VGG_FeatureExtractor
 
+
 class Model(keras.models.Model):
     def __init__(self, opt, **kwargs):
         super(Model, self).__init__(**kwargs)
@@ -29,7 +30,7 @@ class Model(keras.models.Model):
             tf.transpose(visual_feature, perm=[0, 2, 1, 3])
         )  # [b, w, h, c] -> [b, h, w, c]
         visual_feature = tf.squeeze(visual_feature, axis=2)
-        
+
         contextual_feature = visual_feature
 
         prediction = self.Prediction(contextual_feature)
