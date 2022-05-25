@@ -85,7 +85,7 @@ def all_preprocessing(
     image: Image, left: int, top: int, right: int, bottom: int
 ) -> Image:
     np_image = crop_image(image, left, top, right, bottom)
-    np_image = PIL_to_cv2(image)
+    np_image = PIL_to_cv2(np_image)
     # np_image = noise_removal(np_image)
     np_image = convert_to_binary(np_image)
     # np_image = thresholding_trunc(np_image)

@@ -1,5 +1,19 @@
+import json
+from typing import Dict
+
 import tensorflow as tf
 
+
+def read_json(path: str) -> Dict:
+    with open(path, "r") as openfile:
+        file_json = json.load(openfile)
+
+    return file_json
+
+def show_normalized_image(image) -> None:
+    image_numpy = (((image + 1) / 2) * 255).astype(np.uint8)
+    image_numpy = np.squeeze(image_numpy[0], 2)
+    Image.fromarray(image_numpy).show()
 
 class CTCLabelConverter(object):
     """Convert between text-label and text-index"""

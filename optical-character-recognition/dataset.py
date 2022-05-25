@@ -306,6 +306,7 @@ class SingleDataset(keras.utils.Sequence):
             self.image, self.left, self.top, self.right, self.bottom
         )
         image_preprocessed = self.collate_fn([(image_preprocessed, "Prediction")])
+        
         return image_preprocessed
 
     def __call__(self):
