@@ -10,21 +10,10 @@ from model import Model
 from preprocess_image import crop_image
 from utils import CTCLabelConverter
 
-device = "cpu"
-
 
 def demo(opt):
-    """model configuration"""
-    if "CTC" in opt.Prediction:
-        converter = CTCLabelConverter(opt.character)
-    opt.num_class = len(converter.character)
-    if opt.rgb:
-        opt.input_channel = 3
-    model = Model(opt)
-
     # load model
     model = keras.models.load_model(opt.saved_model)
-
     # prepare data. two demo images from https://github.com/bgshih/crnn#run-demo
     AlignCollate_demo = AlignCollate(
         imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD
