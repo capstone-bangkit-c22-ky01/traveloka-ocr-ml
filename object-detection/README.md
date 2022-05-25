@@ -1,1 +1,63 @@
-Object Recognition repository
+# Training SSD MobileNet v2 for Object Detection KTP
+
+In this notebook, we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
+
+## Getting Started
+
+### Dataset
+
+We collected the data from many sources as mentioned below:
+- Google Image
+- OpenSea
+- Pinterest
+- Bing Image
+
+We collected the images only for learning purposes. Our goal is to collect the best and less noisy KTP.
+
+We annotate images manually using [Roboflow](https://app.roboflow.com/). We only took 5 information from the KTP in the form of NIK, Name, Gender, Marital Status, and Nationality which would be used as a class. After the annotations are done, proceed to create a new version of our data set. We implemented preprocessing and augmentation in Roboflow. Then export the data for training to tfrecord.
+
+Our dataset consists of 1.528 training data and 150 validation data. The training data has been augmented from 512 to 1.528 via Roboflow.
+
+If you want to see our dataset, you can do the code below.
+```
+!pip install -q roboflow
+from roboflow import Roboflow
+rf = Roboflow(api_key="SXKaY7lyLrKyC4UwuCji")
+project = rf.workspace("ktp-2wl90").project("final-ktp-od")
+dataset = project.version(2).download("tfrecord")
+```
+
+The code is run on Google Colabs or Jupyter Notebook. Or you can use my dataset here: [download](https://drive.google.com/file/d/1pUheM6du0WE6wPlETREQXTb3NgZV4-QN/view?usp=sharing).
+
+### SSD MobileNet v2
+
+SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model with 267 layers and 15 million parameters. It provides real-time inference under computing limitations in devices such as smartphones. The SSD MobileNet v2 model is basically a 2 part model.
+> 1. A MobileNetV2 base network with an SSD layer classifying the detected images. 
+> 2. The MobileNet base network acts as a feature extractor for the SSD layer which will then classify the desired object.
+
+The MobileNetV2 models are faster for the same accuracy across the entire latency spectrum. In particular, the new models use 2x fewer operations, need 30% fewer parameters and are about 30-40% faster on a Google Pixel phone than MobileNetV1 models, all while achieving higher accuracy.
+
+<p align="center">
+    <img src="contents/image2.png" alt="MobileNetV2 improves speed (reduced latency) and increased ImageNet Top 1 accuracy" width="550" style="vertical-align:middle">
+</p>
+
+
+### Training
+
+We use SSD MobileNet v2 from [TensorFlow 1 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
+
+> - Pretained model: [ssd_mobilenet_v2_coco_2018_03_29](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz)
+> - Pipeline config files: [ssd_mobilenet_v2_coco.config](https://github.com/tensorflow/models/blob/master/research/object_detection/samples/configs/ssd_mobilenet_v2_coco.config)
+
+Please follow all the instructions on the .ipynb file. This file is explained in detail.
+
+If you want a model that has been trained with custom data, you can download the [final model](https://drive.google.com/file/d/1kUKbY2UtMbSRgy4EqIVQUB26dvrFEvgC/view?usp=sharing).
+
+### Reference
+- https://github.com/tensorflow/models
+- https://blog.roboflow.com/getting-started-with-roboflow/
+- https://github.com/roboflow-ai/tensorflow-object-detection-faster-rcnn
+- https://github.com/Tony607/object_detection_demo
+- https://blog.roboflow.com/training-a-tensorflow-object-detection-model-with-a-custom-dataset/
+- https://blog.roboflow.com/how-to-train-a-tensorflow-lite-object-detection-model/
+
