@@ -51,8 +51,6 @@ We use SSD MobileNet v2 from [TensorFlow 1 Detection Model Zoo](https://github.c
 
 Please follow all the instructions on the .ipynb file. This file is explained in detail.
 
-If you want a model that has been trained with custom data, you can download the [final model](https://drive.google.com/file/d/1kUKbY2UtMbSRgy4EqIVQUB26dvrFEvgC/view?usp=sharing).
-
 ### Reference
 - https://github.com/tensorflow/models
 - https://blog.roboflow.com/getting-started-with-roboflow/
