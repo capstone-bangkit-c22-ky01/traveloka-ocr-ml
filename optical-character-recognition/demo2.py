@@ -6,6 +6,8 @@ import tensorflow_addons as tfa
 from PIL import Image
 from tensorflow import keras
 
+import json
+
 from dataset import AlignCollate, SingleDataset, tensorflow_dataloader
 from utils import CTCLabelConverter, read_json, show_normalized_image
 
@@ -17,7 +19,7 @@ def getObject(file_json, label):
     objects.append(file_json["class"][label]["Ymin"])
     objects.append(file_json["class"][label]["Xmax"])
     objects.append(file_json["class"][label]["Ymax"])
-    return objects #image, Xmin, Ymin, Xmax, Ymax
+    return objects # [image, Xmin, Ymin, Xmax, Ymax]
 
 def predict_nik(saved_model, json_file):
     converter = CTCLabelConverter("0123456789")
@@ -57,12 +59,12 @@ def predict_nik(saved_model, json_file):
     preds_index = tf.math.argmax(preds, axis=2)
     # preds_index = preds_index.view(-1)
     preds_str = converter.decode(preds_index, preds_size)
-
-    print(f"{preds_str}")
+    nik = preds_str[0]
+    return nik # String NIK
     
 
 def predict_arial(saved_model, json_file):
-    converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. ")
+    converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. -")
     saved_model = saved_model + '/Arial_Model/best_accuracy'
     model = keras.models.load_model(saved_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D})
 
@@ -88,6 +90,7 @@ def predict_arial(saved_model, json_file):
         )
         demo_datas.append(demo_data)
     
+    arials = []
     for demo_data in demo_datas:
         demo_loader = tensorflow_dataloader(
             demo_data,
@@ -111,12 +114,28 @@ def predict_arial(saved_model, json_file):
         # preds_index = preds_index.view(-1)
         preds_str = converter.decode(preds_index, preds_size)
 
-        print(f"{preds_str}")
+        arials.append(preds_str[0].upper())
+    
+    return arials # [name, sex, married, nationality]
 
 
 def demo(opt):
-    predict_nik(opt.saved_model, read_json(opt.json))
-    predict_arial(opt.saved_model, read_json(opt.json))
+    nik = predict_nik(opt.saved_model, read_json(opt.json))
+    arials = predict_arial(opt.saved_model, read_json(opt.json))
+    dict = {
+        'nik' : nik,
+        'name' : arials[0],
+        'sex' : arials[1],
+        'married' : arials[2],
+        'nationality' : arials[3]
+    }
+    print(dict)
+
+    output_path = './testing/output.json'
+    with open(output_path, "w") as outfile:
+        json.dump(dict, outfile)
+    print(f"Successfully create JSON object at {output_path}")
+
 
     
 
