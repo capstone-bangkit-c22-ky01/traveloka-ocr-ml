@@ -1,40 +1,48 @@
-[1/6000] Train loss: 78.16236, Valid loss: 135.31572, Elapsed_time: 13.35652
+[1/60000] Train loss: 57.51206, Valid loss: 291.51031, Elapsed_time: 12.48940
 Current_accuracy : 0.000, Current_norm_ED  : 0.00
 Best_accuracy    : 0.000, Best_norm_ED     : 0.00
 --------------------------------------------------------------------------------
 Ground Truth              | Prediction                | Confidence Score & T/F
 --------------------------------------------------------------------------------
-arif teja mukti           |                           | 0.9919	False
+prati dhinayanti          | o                         | 0.9703	False
 --------------------------------------------------------------------------------
-[1/6000] Train loss: 78.16236, Valid loss: 135.31572, Elapsed_time: 11.90790
-Current_accuracy : 0.000, Current_norm_ED  : 0.00
-Best_accuracy    : 0.000, Best_norm_ED     : 0.00
+[2000/60000] Train loss: 30.84075, Valid loss: 2.09736, Elapsed_time: 353.76910
+Current_accuracy : 0.000, Current_norm_ED  : 0.93
+Best_accuracy    : 0.000, Best_norm_ED     : 0.93
 --------------------------------------------------------------------------------
 Ground Truth              | Prediction                | Confidence Score & T/F
 --------------------------------------------------------------------------------
-arif teja mukti           |                           | 0.9919	False
+teguh kurniadi            | teguh kurnindi            | 0.9974	False
 --------------------------------------------------------------------------------
-[2000/6000] Train loss: 34.86957, Valid loss: 0.00706, Elapsed_time: 526.45394
+[4000/60000] Train loss: 17.07173, Valid loss: 0.01448, Elapsed_time: 698.38569
 Current_accuracy : 100.000, Current_norm_ED  : 1.00
 Best_accuracy    : 100.000, Best_norm_ED     : 1.00
 --------------------------------------------------------------------------------
 Ground Truth              | Prediction                | Confidence Score & T/F
 --------------------------------------------------------------------------------
-azan magrib               | azan magrib               | 1.0000	True
+siuhualinawati            | siuhualinawati            | 0.7560	True
 --------------------------------------------------------------------------------
-[4000/6000] Train loss: 29.72316, Valid loss: 0.00715, Elapsed_time: 1032.31162
+[6000/60000] Train loss: 13.17804, Valid loss: 0.01543, Elapsed_time: 1040.84198
 Current_accuracy : 100.000, Current_norm_ED  : 1.00
 Best_accuracy    : 100.000, Best_norm_ED     : 1.00
 --------------------------------------------------------------------------------
 Ground Truth              | Prediction                | Confidence Score & T/F
 --------------------------------------------------------------------------------
-nur rohman                | nur rohman                | 1.0000	True
+kalasan                   | kalasan                   | 1.0000	True
 --------------------------------------------------------------------------------
-[6000/6000] Train loss: 25.80649, Valid loss: 0.02130, Elapsed_time: 1529.44599
+[8000/60000] Train loss: 13.45340, Valid loss: 0.00000, Elapsed_time: 1373.50279
 Current_accuracy : 100.000, Current_norm_ED  : 1.00
 Best_accuracy    : 100.000, Best_norm_ED     : 1.00
 --------------------------------------------------------------------------------
 Ground Truth              | Prediction                | Confidence Score & T/F
 --------------------------------------------------------------------------------
-farina amalia             | farina amalia             | 1.0000	True
+tabanan                   | tabanan                   | 1.0000	True
+--------------------------------------------------------------------------------
+[10000/60000] Train loss: 16.35836, Valid loss: 0.00068, Elapsed_time: 1705.71305
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+antonius maghu ate        | antonius maghu ate        | 1.0000	True
 --------------------------------------------------------------------------------
