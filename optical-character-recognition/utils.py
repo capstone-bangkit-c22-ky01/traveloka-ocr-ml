@@ -1,7 +1,9 @@
 import json
 from typing import Dict
 
+import numpy as np
 import tensorflow as tf
+from PIL import Image
 
 
 def read_json(path: str) -> Dict:

@@ -7,7 +7,8 @@ from PIL import Image
 from tensorflow import keras
 
 from dataset import AlignCollate, SingleDataset, tensorflow_dataloader
-from utils import CTCLabelConverter, read_json
+from utils import CTCLabelConverter, read_json, show_normalized_image
+
 
 def getObject(file_json, label):
     objects = []
@@ -45,7 +46,6 @@ def predict_nik(saved_model, json_file):
         collate_fn=AlignCollate_demo,
     )
     image, text_for_pred = next(demo_loader.as_numpy_iterator())
-    
     batch_size = image.shape[0]
     text_for_pred = tf.zeros(shape=(batch_size, 25), dtype=tf.float64)
     length_for_pred = tf.constant([25] * batch_size, dtype=tf.int32)
@@ -98,6 +98,7 @@ def predict_arial(saved_model, json_file):
         )
         image, text_for_pred = next(demo_loader.as_numpy_iterator())
         
+        show_normalized_image(image)
         batch_size = image.shape[0]
         text_for_pred = tf.zeros(shape=(batch_size, 25), dtype=tf.float64)
         length_for_pred = tf.constant([25] * batch_size, dtype=tf.int32)
