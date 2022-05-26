@@ -64,7 +64,7 @@ def predict_nik(saved_model, json_file):
     
 
 def predict_arial(saved_model, json_file):
-    converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. ")
+    converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. -")
     saved_model = saved_model + '/Arial_Model/best_accuracy'
     model = keras.models.load_model(saved_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D})
 
