@@ -8,8 +8,8 @@ from test import validation
 
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
 from PIL import Image
+from tensorflow import keras
 
 from dataset import (
     AlignCollate,
