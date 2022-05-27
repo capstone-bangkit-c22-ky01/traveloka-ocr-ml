@@ -50,8 +50,10 @@ def noise_removal(image: np.array) -> np.array:
 
 
 def thinning(image: np.array) -> np.array:
+    image = np.abs(image - 255)
     kernel = np.ones((5, 5), np.uint8)
     preprocessed_image = cv2.erode(image, kernel, iterations=1)
+    preprocessed_image = np.abs(preprocessed_image - 255)
     return preprocessed_image
 
 
@@ -88,6 +90,7 @@ def all_preprocessing(
     np_image = PIL_to_cv2(np_image)
     # np_image = noise_removal(np_image)
     np_image = convert_to_binary(np_image)
+    # np_image = thinning(np_image)
     # np_image = thresholding_trunc(np_image)
     np_image = thresholding_otsu(np_image)
     final_result = cv2_to_PIL(np_image)

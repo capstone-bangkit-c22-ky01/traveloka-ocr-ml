@@ -3,7 +3,7 @@ import tensorflow_addons as tfa
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from modules.feature_extraction import VGG_FeatureExtractor
+from modules.feature_extraction import ResNet_FeatureExtractor, VGG_FeatureExtractor
 
 
 class Model(keras.models.Model):
@@ -13,10 +13,20 @@ class Model(keras.models.Model):
 
         print("No Transformation Module")
 
-        self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel)
+        if opt.FeatureExtraction == "VGG":
+            self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel)
+        elif opt.FeatureExtraction == "ResNet":
+            self.FeatureExtraction = ResNet_FeatureExtractor(opt.output_channel)
         self.FeatureExtraction_output = opt.output_channel
         # untuk sekarang
-        self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(output_size=(24, 1))
+        if opt.FeatureExtraction == "VGG":
+            self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
+                output_size=(24, 1)
+            )
+        elif opt.FeatureExtraction == "ResNet":
+            self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
+                output_size=(23, 1)
+            )
         print("No sequence modelling module specified")
         self.SequenModelling_output = self.FeatureExtraction_output
 

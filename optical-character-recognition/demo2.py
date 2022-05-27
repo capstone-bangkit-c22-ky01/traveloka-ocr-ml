@@ -19,18 +19,19 @@ def getObject(file_json, label):
     objects.append(file_json["class"][label]["Ymin"])
     objects.append(file_json["class"][label]["Xmax"])
     objects.append(file_json["class"][label]["Ymax"])
-    return objects # [image, Xmin, Ymin, Xmax, Ymax]
+    return objects  # [image, Xmin, Ymin, Xmax, Ymax]
+
 
 def predict_nik(saved_model, json_file):
     converter = CTCLabelConverter("0123456789")
-    saved_model = saved_model + '/NIK_Model/best_accuracy'
+    saved_model = saved_model + "/NIK_Model/best_accuracy"
 
-    model = keras.models.load_model(saved_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D})
-    # prepare data. two demo images from https://github.com/bgshih/crnn#run-demo
-    AlignCollate_demo = AlignCollate(
-        imgH=32, imgW=100, keep_ratio_with_pad=False
+    model = keras.models.load_model(
+        saved_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D}
     )
-    obj = getObject(json_file, 'NIK')
+    # prepare data. two demo images from https://github.com/bgshih/crnn#run-demo
+    AlignCollate_demo = AlignCollate(imgH=32, imgW=100, keep_ratio_with_pad=False)
+    obj = getObject(json_file, "NIK")
     demo_data = SingleDataset(
         image=Image.open(obj[0]),
         opt=opt,
@@ -51,7 +52,7 @@ def predict_nik(saved_model, json_file):
     batch_size = image.shape[0]
     text_for_pred = tf.zeros(shape=(batch_size, 25), dtype=tf.float64)
     length_for_pred = tf.constant([25] * batch_size, dtype=tf.int32)
-    
+
     preds = model(image, text_for_pred)
 
     # Select max probabilty (greedy decoding) then decode index to character
@@ -60,19 +61,19 @@ def predict_nik(saved_model, json_file):
     # preds_index = preds_index.view(-1)
     preds_str = converter.decode(preds_index, preds_size)
     nik = preds_str[0]
-    return nik # String NIK
-    
+    return nik  # String NIK
+
 
 def predict_arial(saved_model, json_file):
     converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. -")
-    saved_model = saved_model + '/Arial_Model/best_accuracy'
-    model = keras.models.load_model(saved_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D})
-
-    AlignCollate_demo = AlignCollate(
-        imgH=32, imgW=100, keep_ratio_with_pad=False
+    saved_model = saved_model + "/Arial_Model/best_accuracy"
+    model = keras.models.load_model(
+        saved_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D}
     )
 
-    labels = ['name', 'sex', 'married', 'nationality']
+    AlignCollate_demo = AlignCollate(imgH=32, imgW=100, keep_ratio_with_pad=False)
+
+    labels = ["name", "sex", "married", "nationality"]
     objs = []
     for label in labels:
         objs.append(getObject(json_file, label))
@@ -89,7 +90,7 @@ def predict_arial(saved_model, json_file):
             collate_fn=AlignCollate_demo,
         )
         demo_datas.append(demo_data)
-    
+
     arials = []
     for demo_data in demo_datas:
         demo_loader = tensorflow_dataloader(
@@ -100,12 +101,12 @@ def predict_arial(saved_model, json_file):
             collate_fn=AlignCollate_demo,
         )
         image, text_for_pred = next(demo_loader.as_numpy_iterator())
-        
+
         show_normalized_image(image)
         batch_size = image.shape[0]
         text_for_pred = tf.zeros(shape=(batch_size, 25), dtype=tf.float64)
         length_for_pred = tf.constant([25] * batch_size, dtype=tf.int32)
-        
+
         preds = model(image, text_for_pred)
 
         # Select max probabilty (greedy decoding) then decode index to character
@@ -115,38 +116,42 @@ def predict_arial(saved_model, json_file):
         preds_str = converter.decode(preds_index, preds_size)
 
         arials.append(preds_str[0].upper())
-    
-    return arials # [name, sex, married, nationality]
+
+    return arials  # [name, sex, married, nationality]
 
 
 def demo(opt):
     nik = predict_nik(opt.saved_model, read_json(opt.json))
     arials = predict_arial(opt.saved_model, read_json(opt.json))
     dict = {
-        'nik' : nik,
-        'name' : arials[0],
-        'sex' : arials[1],
-        'married' : arials[2],
-        'nationality' : arials[3]
+        "nik": nik,
+        "name": arials[0],
+        "sex": arials[1],
+        "married": arials[2],
+        "nationality": arials[3],
     }
     print(dict)
 
-    output_path = './testing/output.json'
+    output_path = "./testing/output.json"
     with open(output_path, "w") as outfile:
         json.dump(dict, outfile)
     print(f"Successfully create JSON object at {output_path}")
 
 
-    
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch_size", type=int, default=192, help="input batch size")
     parser.add_argument(
-        "--saved_model", type=str, required=True, help="path to saved_model to evaluation"
+        "--saved_model",
+        type=str,
+        required=True,
+        help="path to saved_model to evaluation",
     )
     parser.add_argument(
-        "--json", type=str, required=True, help="JSON file contain image path and bounding box coordinate"
+        "--json",
+        type=str,
+        required=True,
+        help="JSON file contain image path and bounding box coordinate",
     )
 
     opt = parser.parse_args()

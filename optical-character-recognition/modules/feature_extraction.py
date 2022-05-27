@@ -257,7 +257,7 @@ class BasisBlock(keras.models.Model):
 
 
 class ResNet(keras.models.Model):
-    def __init__(self, output_channel, block, layers) -> None:
+    def __init__(self, output_channel, block, layers_) -> None:
         super().__init__()
 
         self.output_channel_block = [
@@ -283,8 +283,8 @@ class ResNet(keras.models.Model):
         self.bn0_2 = layers.BatchNormalization()
         self.relu = layers.ReLU()
 
-        self.maxpool1 = layers.MaxPool2D(kernel_size=2, strides=2, padding="VALID")
-        self.layer1 = self._make_layer(block, self.output_channel_block[0], layers[0])
+        self.maxpool1 = layers.MaxPool2D(pool_size=2, strides=2, padding="VALID")
+        self.layer1 = self._make_layer(block, self.output_channel_block[0], layers_[0])
         self.conv1 = layers.Conv2D(
             self.output_channel_block[0],
             kernel_size=3,
@@ -294,9 +294,9 @@ class ResNet(keras.models.Model):
         )
         self.bn1 = layers.BatchNormalization()
 
-        self.maxpool2 = layers.MaxPool2D(kernel_size=2, strides=2, padding="VALID")
+        self.maxpool2 = layers.MaxPool2D(pool_size=2, strides=2, padding="VALID")
         self.layer2 = self._make_layer(
-            block, self.output_channel_block[1], layers[1], strides=1
+            block, self.output_channel_block[1], layers_[1], strides=1
         )
         self.conv2 = layers.Conv2D(
             self.output_channel_block[1],
@@ -319,9 +319,9 @@ class ResNet(keras.models.Model):
                 axis=-1,
             )
         )  # rawan error
-        self.maxpool3 = layers.MaxPool2D(kernel_size=2, strides=(2, 1), padding="VALID")
+        self.maxpool3 = layers.MaxPool2D(pool_size=2, strides=(2, 1), padding="VALID")
         self.layer3 = self._make_layer(
-            block, self.output_channel_block[2], layers[2], strides=1
+            block, self.output_channel_block[2], layers_[2], strides=1
         )
         self.conv3 = layers.Conv2D(
             self.output_channel_block[2],
@@ -333,7 +333,7 @@ class ResNet(keras.models.Model):
         self.bn3 = layers.BatchNormalization()
 
         self.layer4 = self._make_layer(
-            block, self.output_channel_block[3], layers[3], strides=1
+            block, self.output_channel_block[3], layers_[3], strides=1
         )
         # self.lambda_pad
         self.conv4_1 = layers.Conv2D(
@@ -369,14 +369,14 @@ class ResNet(keras.models.Model):
                 ]
             )
 
-        layers = []
-        layers.append(block(self.inplanes, planes, strides, downsample))
+        layers_ = []
+        layers_.append(block(self.inplanes, planes, strides, downsample))
 
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
+            layers_.append(block(self.inplanes, planes))
 
-        return keras.Sequential(layers)
+        return keras.Sequential(layers_)
 
     def call(self, X):
 
@@ -390,7 +390,7 @@ class ResNet(keras.models.Model):
         X = self.maxpool1(X)
         X = self.layer1(X)
         X = self.conv1(X)
-        X = self.bn_1(X)
+        X = self.bn1(X)
         X = self.relu(X)
 
         X = self.maxpool2(X)
