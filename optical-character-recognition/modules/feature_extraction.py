@@ -306,19 +306,8 @@ class ResNet(keras.models.Model):
             use_bias=False,
         )
         self.bn2 = layers.BatchNormalization()
-
-        self.lambda_pad = layers.Lambda(
-            lambda x: tf.concat(
-                [
-                    x,
-                    tf.cast(
-                        tf.zeros(shape=tf.concat([x.shape[:-1], [1]], axis=-1)),
-                        tf.float32,
-                    ),
-                ],
-                axis=-1,
-            )
-        )  # rawan error
+        self.lambda_pad = layers.Concatenate()
+        # rawan error
         self.maxpool3 = layers.MaxPool2D(pool_size=2, strides=(2, 1), padding="VALID")
         self.layer3 = self._make_layer(
             block, self.output_channel_block[2], layers_[2], strides=1
@@ -399,7 +388,10 @@ class ResNet(keras.models.Model):
         X = self.bn2(X)
         X = self.relu(X)
 
-        X = self.lambda_pad(X)
+        X = self.lambda_pad([X, tf.cast(
+                        tf.zeros(shape=tf.concat([X.shape[:-1], [1]], axis=-1)),
+                        tf.float32,
+                    )])
         X = self.maxpool3(X)
         X = self.layer3(X)
         X = self.conv3(X)
