@@ -2,24 +2,30 @@ import os
 
 from numpy import percentile
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-import tensorflow as tf
-import tensorflow_addons as tfa
-from PIL import Image
-from tensorflow import keras
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import json
 
-from dataset import AlignCollate, SingleDataset, tensorflow_dataloader
-from utils import CTCLabelConverter, show_normalized_image
-
+import tensorflow as tf
+import tensorflow_addons as tfa
 from flask import Flask, jsonify, request
+from PIL import Image
+from tensorflow import keras
 
-arial_model = keras.models.load_model("optical-character-recognition/saved_models/Arial_Model/best_accuracy")
-nik_model = keras.models.load_model("optical-character-recognition/saved_models/NIK_Model/best_accuracy")
+from dataset import AlignCollate, SingleDataset, tensorflow_dataloader
+from utils import CTCLabelConverter
+
+arial_model = keras.models.load_model(
+    "saved_models/Arial_Model/best_accuracy",
+    custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D},
+)
+nik_model = keras.models.load_model(
+    "saved_models/NIK_model/best_accuracy",
+    custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D},
+)
 
 app = Flask(__name__)
+
 
 def getObject(file_json, label):
     objects = []
@@ -30,11 +36,10 @@ def getObject(file_json, label):
     objects.append(file_json["class"][label]["Ymax"])
     return objects  # [image, Xmin, Ymin, Xmax, Ymax]
 
+
 def predict_arial(json_input):
     converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. -")
-    model = keras.models.load_model(
-        arial_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D}
-    )
+    model = arial_model
 
     AlignCollate_demo = AlignCollate(imgH=32, imgW=100, keep_ratio_with_pad=False)
 
@@ -60,14 +65,12 @@ def predict_arial(json_input):
     for demo_data in demo_datas:
         demo_loader = tensorflow_dataloader(
             demo_data,
-            batch_size=opt.batch_size,
+            batch_size=1,
             shuffle=True,
             num_workers=4,
             collate_fn=AlignCollate_demo,
         )
         image, text_for_pred = next(demo_loader.as_numpy_iterator())
-
-        show_normalized_image(image)
         batch_size = image.shape[0]
         text_for_pred = tf.zeros(shape=(batch_size, 25), dtype=tf.float64)
         # length_for_pred = tf.constant([25] * batch_size, dtype=tf.int32)
@@ -84,12 +87,11 @@ def predict_arial(json_input):
 
     return arials  # [name, sex, married, nationality]
 
+
 def predict_nik(json_input):
     converter = CTCLabelConverter("0123456789")
 
-    model = keras.models.load_model(
-        nik_model, custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D}
-    )
+    model = nik_model
 
     AlignCollate_demo = AlignCollate(imgH=32, imgW=100, keep_ratio_with_pad=False)
     obj = getObject(json_input, "NIK")
@@ -104,7 +106,7 @@ def predict_nik(json_input):
     )
     demo_loader = tensorflow_dataloader(
         demo_data,
-        batch_size=opt.batch_size,
+        batch_size=1,
         shuffle=True,
         num_workers=4,
         collate_fn=AlignCollate_demo,
@@ -122,6 +124,7 @@ def predict_nik(json_input):
     nik = preds_str[0]
     return nik  # String NIK
 
+
 def predict(json_input):
     nik = predict_nik(json_input)
     arials = predict_arial(json_input)
@@ -132,8 +135,8 @@ def predict(json_input):
         "married": arials[2],
         "nationality": arials[3],
     }
-    print(dict)
     return json.dumps(dict)
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -145,13 +148,12 @@ def index():
             return jsonify({"error": "no data"})
 
         try:
-            prediction = predict(request.json)
+            prediction = predict(request.get_json())
             return prediction
         except Exception as e:
             return jsonify({"error": str(e)})
-            
-        # return predict(request.json)
 
+        # return predict(request.json)
 
         # file = request.files.get('file')
         # if file is None or file.filename == "":

@@ -3,7 +3,6 @@ from tensorflow import keras
 from tensorflow.keras import layers  # type: ignore
 
 
-
 class VGG_FeatureExtractor(keras.models.Model):
     """FeatureExtractor of CRNN (https://arxiv.org/pdf/1507.05717.pdf)
     Berarti Transfer Learning untuk pretrainednya VGG
@@ -387,9 +386,9 @@ class ResNet(keras.models.Model):
         X = self.layer2(X)
         X = self.conv2(X)
         X = self.bn2(X)
-        X = self.relu(X) 
+        X = self.relu(X)
         # # shape hardcoded
-        # X = self.lambda_pad([X, 
+        # X = self.lambda_pad([X,
         #                 tf.zeros(shape=(1, 8, 25, 1))])
         X = self.maxpool3(X)
         X = self.layer3(X)

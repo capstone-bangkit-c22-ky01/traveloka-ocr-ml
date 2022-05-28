@@ -289,8 +289,7 @@ class LmdbDataset(keras.utils.Sequence):
 
 
 class SingleDataset(keras.utils.Sequence):
-    def __init__(self, image, opt, left, top, right, bottom, collate_fn):
-        self.opt = opt
+    def __init__(self, image, left, top, right, bottom, collate_fn):
         self.image = image
         self.left = left
         self.top = top
