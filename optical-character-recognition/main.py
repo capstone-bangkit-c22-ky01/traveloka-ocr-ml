@@ -11,6 +11,7 @@ import tensorflow_addons as tfa
 from flask import Flask, jsonify, request
 from PIL import Image
 from tensorflow import keras
+import re
 
 from dataset import AlignCollate, SingleDataset, tensorflow_dataloader
 from utils import CTCLabelConverter
@@ -124,6 +125,10 @@ def predict_nik(json_input):
     nik = preds_str[0]
     return nik  # String NIK
 
+def process_sex(input):
+    regex = re.sub(r"[abcdefghijmnopqrstuvwxyz]", '', input) # no K and L
+    regexx = re.sub(r"[l]+", 'LAKI-LAKI', regex)
+    return "LAKI-LAKI" if regexx else "PEREMPUAN"
 
 def predict(json_input):
     nik = predict_nik(json_input)
@@ -131,7 +136,7 @@ def predict(json_input):
     dict = {
         "nik": nik,
         "name": arials[0],
-        "sex": arials[1],
+        "sex": process_sex(arials[1]),
         "married": arials[2],
         "nationality": arials[3],
     }
