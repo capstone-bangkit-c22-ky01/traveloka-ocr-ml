@@ -126,7 +126,7 @@ def predict_nik(json_input):
     return nik  # String NIK
 
 def process_sex(input):
-    regex = re.sub(r"[abcdefghijmnopqrstuvwxyz]", '', input) # no K and L
+    regex = re.sub(r"[ABCDEFGHIJMNOPQRSTUVWXYZ]", '', input) # no K and L
     regexx = re.sub(r"[l]+", 'LAKI-LAKI', regex)
     return "LAKI-LAKI" if regexx else "PEREMPUAN"
 
