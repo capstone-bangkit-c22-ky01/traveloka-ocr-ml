@@ -83,7 +83,7 @@ def predict_arial(json_input):
         # preds_index = preds_index.view(-1)
         preds_str = converter.decode(preds_index, preds_size)
 
-        arials.append(preds_str[0].upper())
+        arials.append(preds_str[0])
 
     return arials  # [name, sex, married, nationality]
 
@@ -125,8 +125,8 @@ def predict_nik(json_input):
     return nik  # String NIK
 
 def process_sex(input):
-    male = ['K', 'L']
-    female = ['P', 'R']
+    male = ['k', 'l']
+    female = ['p', 'r']
     sex = 0
     for ch in input:
         if ch in male:
@@ -134,17 +134,61 @@ def process_sex(input):
         elif ch in female:
             sex -= 1
 
-    return "LAKI-LAKI" if sex >= 0 else "PEREMPUAN"
+    return "laki-laki" if sex >= 0 else "perempuan"
+
+def process_gender(input):
+    gender = re.sub(r'[abcdefghijoqstuvwxyz,. -]', '', input) + ' '
+    if 'l' in gender or 'k' in gender:
+        final = 'laki-laki'
+    elif 'p' in gender or 'r' in gender or 'm' in gender or 'n' in gender:
+        final = 'perempuan'
+    elif ' ' in gender:
+        final = 'default'
+    return final
+
+def process_married(input):
+    kawin = re.sub(r'[abcdefghijlmnopqrstuvxyz,. -]', '', input)
+    kawin = re.sub(r'[kw]+', 'kawin', kawin)
+    cerai = re.sub(r'[abdefghijklmnopqstuvwxyz,. -]', '', input)
+    cerai = re.sub(r'[cr]+', 'cerai', cerai)
+
+    if kawin == 'kawin':
+        belum = re.sub(r'[acdfghijnopqrstvwxyz,. -]', '', input)
+        belum = re.sub(r'[belum]+', 'belum', input)
+        if belum == 'belum':
+            final = 'belum kawin'
+        else:
+            final = 'kawin'
+    elif cerai == 'cerai':
+        cerai = re.sub(r'[abcefgijklnoqrsuvwxyz,. -]', '', input) + ' '
+        if 'h' in cerai or 'd' in cerai or 'p' in cerai:
+            final = 'cerai hidup'
+        elif 'm' in cerai or 't' in cerai:
+            final = 'cerai mati'
+        elif " " in cerai:
+            final = 'default'
+    else:
+        final = 'default'
+    return final
+
+def process_national(input):
+    national = re.sub(r'[abcdefghjklmopqrstuvxyz,. -]', '', input) + ' '
+
+    if 'wni ' in national or 'w' in national or 'ni' in national:
+        final = 'Indonesia'
+    elif ' ' in national:
+        final = 'default'
+    return final
 
 def predict(json_input):
     nik = predict_nik(json_input)
     arials = predict_arial(json_input)
     dict = {
         "nik": nik,
-        "name": arials[0],
-        "sex": process_sex(arials[1]),
-        "married": arials[2],
-        "nationality": arials[3],
+        "name": arials[0].upper(),
+        "sex": process_sex(arials[1]).upper(),
+        "married": process_married(arials[2]).upper(),
+        "nationality": process_national(arials[3]).upper(),
     }
     return json.dumps(dict)
 
