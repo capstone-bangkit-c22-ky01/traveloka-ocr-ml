@@ -1,6 +1,7 @@
 # Training SSD MobileNet v2 for Object Detection KTP
 
 In this notebook, we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
+
 <p align="center">
     <img src="contents/Object Detection KTP.png" alt="Object Detection KTP" width="1280" style="vertical-align:middle">
 </p>
@@ -19,7 +20,7 @@ We collected the images only for learning purposes. Our goal is to collect the b
 
 We annotate images manually using [Roboflow](https://app.roboflow.com/). We only took 5 information from the KTP in the form of NIK, Name, Gender, Marital Status, and Nationality which would be used as a class. After the annotations are done, proceed to create a new version of our data set. We implemented preprocessing and augmentation in Roboflow. Then export the data for training to tfrecord.
 
-Our dataset consists of 1.528 training data and 150 validation data. The training data has been augmented from 450 to 1.350 via Roboflow.
+Our dataset consists of 1.500 training data and 150 validation data. The training data has been augmented from 450 to 1.350 via Roboflow.
 
 If you want to see our dataset, you can do the code below.
 
