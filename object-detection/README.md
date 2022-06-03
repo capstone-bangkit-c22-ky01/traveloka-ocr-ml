@@ -36,8 +36,18 @@ The code is run on Google Colabs or Jupyter Notebook. Or you can use my dataset 
 ### SSD MobileNet v2
 
 SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model with 267 layers and 15 million parameters. It provides real-time inference under computing limitations in devices such as smartphones. The SSD MobileNet v2 model is basically a 2 part model.
-> 1. A MobileNetV2 base network with an SSD layer classifying the detected images. 
-> 2. The MobileNet base network acts as a feature extractor for the SSD layer which will then classify the desired object.
+
+1. A MobileNetV2 base network with an SSD layer classifying the detected images.
+
+<p align="center">
+    <img src="contents/ssd_diagram.png" alt="SSD Layer" width="550" style="vertical-align:middle">
+</p>
+
+2. The MobileNet base network acts as a feature extractor for the SSD layer which will then classify the desired object.
+
+<p align="center">
+    <img src="contents/Classifier.png" alt="MobileNetV2 Classifier" width="550" style="vertical-align:middle">
+</p>
 
 The MobileNetV2 models are faster for the same accuracy across the entire latency spectrum. In particular, the new models use 2x fewer operations, need 30% fewer parameters and are about 30-40% faster on a Google Pixel phone than MobileNetV1 models, all while achieving higher accuracy.
 
