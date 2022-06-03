@@ -34,7 +34,6 @@ def predict_nik(saved_model, json_file):
     obj = getObject(json_file, "NIK")
     demo_data = SingleDataset(
         image=Image.open(obj[0]),
-        opt=opt,
         left=obj[1],
         top=obj[2],
         right=obj[3],
@@ -43,7 +42,7 @@ def predict_nik(saved_model, json_file):
     )
     demo_loader = tensorflow_dataloader(
         demo_data,
-        batch_size=opt.batch_size,
+        batch_size=1,
         shuffle=True,
         num_workers=4,
         collate_fn=AlignCollate_demo,
@@ -82,7 +81,6 @@ def predict_arial(saved_model, json_file):
     for obj in objs:
         demo_data = SingleDataset(
             image=Image.open(obj[0]),
-            opt=opt,
             left=obj[1],
             top=obj[2],
             right=obj[3],
@@ -95,7 +93,7 @@ def predict_arial(saved_model, json_file):
     for demo_data in demo_datas:
         demo_loader = tensorflow_dataloader(
             demo_data,
-            batch_size=opt.batch_size,
+            batch_size=1,
             shuffle=True,
             num_workers=4,
             collate_fn=AlignCollate_demo,
