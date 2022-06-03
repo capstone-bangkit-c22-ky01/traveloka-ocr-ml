@@ -19,7 +19,7 @@ We collected the images only for learning purposes. Our goal is to collect the b
 
 We annotate images manually using [Roboflow](https://app.roboflow.com/). We only took 5 information from the KTP in the form of NIK, Name, Gender, Marital Status, and Nationality which would be used as a class. After the annotations are done, proceed to create a new version of our data set. We implemented preprocessing and augmentation in Roboflow. Then export the data for training to tfrecord.
 
-Our dataset consists of 1.528 training data and 150 validation data. The training data has been augmented from 512 to 1.528 via Roboflow.
+Our dataset consists of 1.528 training data and 150 validation data. The training data has been augmented from 450 to 1.350 via Roboflow.
 
 If you want to see our dataset, you can do the code below.
 
@@ -27,8 +27,8 @@ If you want to see our dataset, you can do the code below.
 !pip install -q roboflow
 from roboflow import Roboflow
 rf = Roboflow(api_key="SXKaY7lyLrKyC4UwuCji")
-project = rf.workspace("ktp-2wl90").project("final-ktp-od")
-dataset = project.version(2).download("tfrecord")
+project = rf.workspace("ktp-2wl90").project("final-ktp-od-v2")
+dataset = project.version(1).download("tfrecord")
 ```
 
 The code is run on Google Colabs or Jupyter Notebook. Or you can use my dataset here: [download](https://drive.google.com/file/d/1pUheM6du0WE6wPlETREQXTb3NgZV4-QN/view?usp=sharing).
