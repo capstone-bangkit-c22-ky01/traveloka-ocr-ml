@@ -1,6 +1,9 @@
 # Training SSD MobileNet v2 for Object Detection KTP
 
 In this notebook, we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
+<p align="center">
+    <img src="contents/Object Detection KTP.png" alt="Object Detection KTP" width="1280" style="vertical-align:middle">
+</p>
 
 ## Getting Started
 
