@@ -1,7 +1,7 @@
 ------------ Options -------------
 exp_name: None-VGG-None-CTC-Seed1111
-train_data: result
-valid_data: result
+train_data: result2
+valid_data: result2
 manualSeed: 1111
 workers: 4
 batch_size: 1
