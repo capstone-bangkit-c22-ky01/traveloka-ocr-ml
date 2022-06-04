@@ -32,7 +32,7 @@ project = rf.workspace("ktp-2wl90").project("final-ktp-od-v2")
 dataset = project.version(1).download("tfrecord")
 ```
 
-The code is run on Google Colabs or Jupyter Notebook. Or you can use my dataset here: [download]((https://drive.google.com/drive/folders/1_0Wb2Y4eazmsUTe0e2wIB7uUUhZOZuzQ?usp=sharing)).
+The code is run on Google Colabs or Jupyter Notebook. Or you can use my dataset here: [download](https://drive.google.com/drive/folders/1_0Wb2Y4eazmsUTe0e2wIB7uUUhZOZuzQ?usp=sharing).
 
 ### SSD MobileNet v2
 
