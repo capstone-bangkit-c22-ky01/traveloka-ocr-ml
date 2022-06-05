@@ -128,57 +128,37 @@ def process_sex(input):
     male = ['k', 'l']
     female = ['p', 'r']
     sex = 0
-    for ch in input:
+    for ch in input.lower():
         if ch in male:
             sex += 1
         elif ch in female:
             sex -= 1
 
-    return "laki-laki" if sex >= 0 else "perempuan"
-
-def process_gender(input):
-    gender = re.sub(r'[abcdefghijoqstuvwxyz,. -]', '', input) + ' '
-    if 'l' in gender or 'k' in gender:
-        final = 'laki-laki'
-    elif 'p' in gender or 'r' in gender or 'm' in gender or 'n' in gender:
-        final = 'perempuan'
-    elif ' ' in gender:
-        final = 'default'
-    return final
+    return "LAKI-LAKI" if sex >= 0 else "PEREMPUAN"
 
 def process_married(input):
-    kawin = re.sub(r'[abcdefghijlmnopqrstuvxyz,. -]', '', input)
-    kawin = re.sub(r'[kw]+', 'kawin', kawin)
-    cerai = re.sub(r'[abdefghijklmnopqstuvwxyz,. -]', '', input)
-    cerai = re.sub(r'[cr]+', 'cerai', cerai)
+    cerais = ['c', 'r']
+    kawins = ['k', 'w', 'n']
+    belums = ['u', 'm']
 
-    if kawin == 'kawin':
-        belum = re.sub(r'[acdfghijnopqrstvwxyz,. -]', '', input)
-        belum = re.sub(r'[belum]+', 'belum', input)
-        if belum == 'belum':
-            final = 'belum kawin'
-        else:
-            final = 'kawin'
-    elif cerai == 'cerai':
-        cerai = re.sub(r'[abcefgijklnoqrsuvwxyz,. -]', '', input) + ' '
-        if 'h' in cerai or 'd' in cerai or 'p' in cerai:
-            final = 'cerai hidup'
-        elif 'm' in cerai or 't' in cerai:
-            final = 'cerai mati'
-        elif " " in cerai:
-            final = 'default'
-    else:
-        final = 'default'
-    return final
+    divorce = 0
+    belum = 0
+    for ch in input.lower():
+        if ch in cerais:
+            divorce += 1
+        elif ch in kawins:
+            divorce -= 1
+        if ch in belums:
+            belum += 1
+            divorce -= 1
+
+    return "CERAI" if divorce > 0 else "BELUM KAWIN" if belum else "KAWIN"
 
 def process_national(input):
-    national = re.sub(r'[abcdefghjklmopqrstuvxyz,. -]', '', input) + ' '
-
-    if 'wni ' in national or 'w' in national or 'ni' in national:
-        final = 'Indonesia'
-    elif ' ' in national:
-        final = 'default'
-    return final
+    for ch in input.lower():
+        if ch == 'w' or ch == 'n':
+            return "INDONESIA"
+    return input.upper()
 
 def predict(json_input):
     nik = predict_nik(json_input)
