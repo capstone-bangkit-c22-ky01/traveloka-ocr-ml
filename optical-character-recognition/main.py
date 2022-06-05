@@ -20,7 +20,7 @@ arial_model = keras.models.load_model(
     custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D},
 )
 nik_model = keras.models.load_model(
-    "saved_models/NIK_model/best_accuracy",
+    "saved_models/NIK_Model/best_accuracy",
     custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D},
 )
 
