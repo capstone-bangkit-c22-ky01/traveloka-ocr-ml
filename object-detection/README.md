@@ -50,13 +50,6 @@ SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model w
     <img src="contents/Classifier.png" alt="MobileNetV2 Classifier" width="550" style="vertical-align:middle">
 </p>
 
-The MobileNetV2 models are faster for the same accuracy across the entire latency spectrum. In particular, the new models use 2x fewer operations, need 30% fewer parameters and are about 30-40% faster on a Google Pixel phone than MobileNetV1 models, all while achieving higher accuracy.
-
-<p align="center">
-    <img src="contents/image2.png" alt="MobileNetV2 improves speed (reduced latency) and increased ImageNet Top 1 accuracy" width="550" style="vertical-align:middle">
-</p>
-
-
 ### Training
 
 We use SSD MobileNet v2 from [TensorFlow 1 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
