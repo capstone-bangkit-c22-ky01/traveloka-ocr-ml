@@ -1,0 +1,248 @@
+[1/60000] Train loss: 75.92462, Valid loss: 108.12154, Elapsed_time: 12.51015
+Current_accuracy : 0.000, Current_norm_ED  : 0.00
+Best_accuracy    : 0.000, Best_norm_ED     : 0.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+ria susilawati            |                           | 0.6230	False
+--------------------------------------------------------------------------------
+[2000/60000] Train loss: 15.98367, Valid loss: 0.47628, Elapsed_time: 377.78172
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+agus pujiyono             | agus pujiyono             | 0.7365	True
+--------------------------------------------------------------------------------
+[4000/60000] Train loss: 6.95126, Valid loss: 0.53059, Elapsed_time: 742.25023
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+antonius maghu ate        | antonius maghu ate        | 1.0000	True
+--------------------------------------------------------------------------------
+[6000/60000] Train loss: 9.72730, Valid loss: 26.95482, Elapsed_time: 1104.51198
+Current_accuracy : 0.000, Current_norm_ED  : 0.75
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+gusti nyoman suarningsih  | gustinyhmnsurningsi       | 0.9854	False
+--------------------------------------------------------------------------------
+[8000/60000] Train loss: 8.07825, Valid loss: 0.00004, Elapsed_time: 1463.31756
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+bangli                    | bangli                    | 1.0000	True
+--------------------------------------------------------------------------------
+[10000/60000] Train loss: 11.24019, Valid loss: 0.00000, Elapsed_time: 1819.18307
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+srengseng                 | srengseng                 | 0.9773	True
+--------------------------------------------------------------------------------
+[12000/60000] Train loss: 6.67602, Valid loss: 0.00000, Elapsed_time: 2187.68171
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+i nyoman gede             | i nyoman gede             | 1.0000	True
+--------------------------------------------------------------------------------
+[14000/60000] Train loss: 9.22528, Valid loss: 0.04021, Elapsed_time: 2556.65350
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+jl mawarxiii lk xix       | jl mawarxiii lk xix       | 0.9991	True
+--------------------------------------------------------------------------------
+[16000/60000] Train loss: 10.73232, Valid loss: 0.00000, Elapsed_time: 2931.74231
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+redi alamsyah             | redi alamsyah             | 1.0000	True
+--------------------------------------------------------------------------------
+[18000/60000] Train loss: 10.76245, Valid loss: 6.98437, Elapsed_time: 3297.84272
+Current_accuracy : 0.000, Current_norm_ED  : 0.95
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+zhia syahreza novianto    | zhia wyahreza novianto    | 0.9820	False
+--------------------------------------------------------------------------------
+[20000/60000] Train loss: 8.61016, Valid loss: 0.00000, Elapsed_time: 3654.96335
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+redi alamsyah             | redi alamsyah             | 1.0000	True
+--------------------------------------------------------------------------------
+[22000/60000] Train loss: 8.81428, Valid loss: 0.00016, Elapsed_time: 4012.81344
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+pelaut                    | pelaut                    | 1.0000	True
+--------------------------------------------------------------------------------
+[24000/60000] Train loss: 6.15243, Valid loss: 0.00000, Elapsed_time: 4379.87385
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+apo gunung                | apo gunung                | 0.9577	True
+--------------------------------------------------------------------------------
+[26000/60000] Train loss: 9.24138, Valid loss: 0.00000, Elapsed_time: 4764.37095
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+i ketut ardika            | i ketut ardika            | 1.0000	True
+--------------------------------------------------------------------------------
+[28000/60000] Train loss: 9.26848, Valid loss: 0.00005, Elapsed_time: 5142.71847
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+febri adriansyah          | febri adriansyah          | 1.0000	True
+--------------------------------------------------------------------------------
+[30000/60000] Train loss: 9.82750, Valid loss: 0.00076, Elapsed_time: 5523.30608
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+sulistyo arie wibowo      | sulistyo arie wibowo      | 1.0000	True
+--------------------------------------------------------------------------------
+[32000/60000] Train loss: 7.69791, Valid loss: 0.12577, Elapsed_time: 5894.71493
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+yanto                     | yanto                     | 1.0000	True
+--------------------------------------------------------------------------------
+[34000/60000] Train loss: 11.87415, Valid loss: 0.00026, Elapsed_time: 6260.96599
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+dusun batu bangka         | dusun batu bangka         | 1.0000	True
+--------------------------------------------------------------------------------
+[36000/60000] Train loss: 13.95070, Valid loss: 4.03925, Elapsed_time: 6620.00458
+Current_accuracy : 0.000, Current_norm_ED  : 0.89
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+laki-laki                 | laki-laka                 | 1.0000	False
+--------------------------------------------------------------------------------
+[38000/60000] Train loss: 13.92632, Valid loss: 0.00081, Elapsed_time: 6991.00116
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+kota probolinggo          | kota probolinggo          | 1.0000	True
+--------------------------------------------------------------------------------
+[40000/60000] Train loss: 11.44199, Valid loss: 0.00000, Elapsed_time: 7359.98034
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+ria susilawati            | ria susilawati            | 1.0000	True
+--------------------------------------------------------------------------------
+[42000/60000] Train loss: 13.00849, Valid loss: 2.42629, Elapsed_time: 7731.58112
+Current_accuracy : 0.000, Current_norm_ED  : 0.95
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+ayu nurul rahmawati       | ayunurul rahmawati        | 0.9991	False
+--------------------------------------------------------------------------------
+[44000/60000] Train loss: 10.95736, Valid loss: 0.00002, Elapsed_time: 8100.48094
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+rizki firmananda          | rizki firmananda          | 1.0000	True
+--------------------------------------------------------------------------------
+[46000/60000] Train loss: 7.83496, Valid loss: 0.00039, Elapsed_time: 8465.92144
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+helvetia tengah           | helvetia tengah           | 1.0000	True
+--------------------------------------------------------------------------------
+[48000/60000] Train loss: 7.78251, Valid loss: 0.01514, Elapsed_time: 8839.77629
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+i kadek eka saputra       | i kadek eka saputra       | 1.0000	True
+--------------------------------------------------------------------------------
+[50000/60000] Train loss: 7.82040, Valid loss: 0.00000, Elapsed_time: 9213.13346
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+selamat idul adha         | selamat idul adha         | 1.0000	True
+--------------------------------------------------------------------------------
+[52000/60000] Train loss: 8.87276, Valid loss: 0.00016, Elapsed_time: 9580.38772
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+cerai hidup               | cerai hidup               | 1.0000	True
+--------------------------------------------------------------------------------
+[54000/60000] Train loss: 10.93584, Valid loss: 0.00005, Elapsed_time: 9949.31922
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+belum kawin               | belum kawin               | 1.0000	True
+--------------------------------------------------------------------------------
+[56000/60000] Train loss: 7.82065, Valid loss: 0.00000, Elapsed_time: 10323.50431
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+kota jayapura             | kota jayapura             | 1.0000	True
+--------------------------------------------------------------------------------
+[58000/60000] Train loss: 13.01104, Valid loss: 0.00002, Elapsed_time: 10693.52434
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+jampang kulon             | jampang kulon             | 1.0000	True
+--------------------------------------------------------------------------------
+[60000/60000] Train loss: 10.42411, Valid loss: 0.00032, Elapsed_time: 11064.17072
+Current_accuracy : 100.000, Current_norm_ED  : 1.00
+Best_accuracy    : 100.000, Best_norm_ED     : 1.00
+--------------------------------------------------------------------------------
+Ground Truth              | Prediction                | Confidence Score & T/F
+--------------------------------------------------------------------------------
+ayu sri rahayu            | ayu sri rahayu            | 1.0000	True
+--------------------------------------------------------------------------------
