@@ -1,6 +1,6 @@
-# Training SSD MobileNet v2 for Object Detection KTP
+# Object Detection KTP (Kartu Tanda Penduduk)/Indonesia User's ID
 
-In this notebook, we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
+Machine Learning engineer team repository of Traveloka OCR Project.
 
 <p align="center">
     <img src="contents/Object Detection KTP.png" alt="Object Detection KTP" width="1280" style="vertical-align:middle">
@@ -51,6 +51,8 @@ SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model w
 </p>
 
 ### Training
+
+In this notebook, we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
 
 We use SSD MobileNet v2 from [TensorFlow 1 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
 
