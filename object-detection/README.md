@@ -9,7 +9,7 @@ Machine Learning engineer team repository of Traveloka OCR Project.
 ## Model Development
 
 <p align="center">
-    <img src="contents/model development.png" alt="Object Detection KTP Model Development" width="1280" style="vertical-align:middle">
+    <img src="contents/Model Development.png" alt="Object Detection KTP Model Development" width="1280" style="vertical-align:middle">
 </p>
 
 ## Getting Started
