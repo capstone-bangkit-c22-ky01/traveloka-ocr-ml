@@ -158,7 +158,7 @@ def process_national(input):
     for ch in input.lower():
         if ch == 'w' or ch == 'n':
             return "INDONESIA"
-    return input.upper()
+    return "DEFAULT"
 
 def predict(json_input):
     nik = predict_nik(json_input)
