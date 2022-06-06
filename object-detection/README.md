@@ -1,9 +1,15 @@
-# Object Detection KTP (Kartu Tanda Penduduk)/Indonesia User's ID
+# Object Detection KTP (Kartu Tanda Penduduk) Indonesia/Indonesia User's ID
 
 Machine Learning engineer team repository of Traveloka OCR Project.
 
 <p align="center">
     <img src="contents/Object Detection KTP.png" alt="Object Detection KTP" width="1280" style="vertical-align:middle">
+</p>
+
+## Model Development
+
+<p align="center">
+    <img src="contents/model development.png" alt="Object Detection KTP Model Development" width="1280" style="vertical-align:middle">
 </p>
 
 ## Getting Started
