@@ -13,8 +13,7 @@ After annotating, we preprocessed the images using **CV2** like below:
 - Noise removal to remove noise i.e. unwanted dots and strips in ID card
 - Grayscaling reduce image dimensionality
 - Thresholding Onsu to project pixel value into binary (0 or 255)
-  
-Noise Removal for removing the noise, Thresholding Otsu, Grayscaling
+
 | Demo images | Preprocessed | 
 | ---         |     ---      | 
 | <img src="./misc/data/nik.png" width="300" height="30">    |  <img src="./misc/data_processed/nik.png" width="300" height="30">   |  
@@ -87,7 +86,7 @@ python train.py --train_data result --valid_data result --select_data / --batch_
 
 ## Demo
 
-| Demo images  | prediction result |
+| Demo images  | Prediction result |
 | ---            |          --- |
 | <img src="./misc/data/nik.png" width="300" height="30">       |  3329091212121059   |
 | <img src="./misc/data/name.png" width="300" height="30">     |  BORUTO   |
