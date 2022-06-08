@@ -2,7 +2,7 @@
 Optical Character Recognition
 
 ## Model Development
-<img src="./misc/model_development.png" alt="OCR KTP Indonesia Model Development" width="1280" style="vertical-align:middle"> 
+<img src="./misc/Model Development OCR.png" alt="OCR KTP Indonesia Model Development" width="1280" style="vertical-align:middle"> 
 
 ## Training Process
 ### Dataset
