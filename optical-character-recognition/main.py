@@ -16,7 +16,7 @@ from dataset import AlignCollate, SingleDataset, tensorflow_dataloader
 from utils import CTCLabelConverter
 
 arial_model = keras.models.load_model(
-    "saved_models/Arial_Model/best_accuracy",
+    "saved_models/Arial_Model/last_iter",
     custom_objects={"AAP": tfa.layers.AdaptiveAveragePooling2D},
 )
 nik_model = keras.models.load_model(
@@ -41,7 +41,7 @@ def predict_arial(json_input):
     converter = CTCLabelConverter("abcdefghijklmnopqrstuvwxyz,. -")
     model = arial_model
 
-    AlignCollate_demo = AlignCollate(imgH=32, imgW=100, keep_ratio_with_pad=False)
+    AlignCollate_demo = AlignCollate(imgH=64, imgW=200, keep_ratio_with_pad=False)
 
     labels = ["name", "sex", "married", "nationality"]
     objs = []
@@ -68,6 +68,8 @@ def predict_arial(json_input):
             batch_size=1,
             shuffle=True,
             num_workers=4,
+            imgH=64,
+            imgW=200,
             collate_fn=AlignCollate_demo,
         )
         image, text_for_pred = next(demo_loader.as_numpy_iterator())
