@@ -26,18 +26,6 @@ We resized the dataset to 416x416 for a smaller file size and faster training. T
 | ---         |     ---      | 
 | <img src="./contents/before augmentation.png" width="450" height="100">    |  <img src="./contents/after augmentation.png" width="450" height="100">   | 
 
-If you want to see our dataset, you can do the code below.
-
-```
-!pip install -q roboflow
-from roboflow import Roboflow
-rf = Roboflow(api_key="SXKaY7lyLrKyC4UwuCji")
-project = rf.workspace("ktp-2wl90").project("final-ktp-od-v2")
-dataset = project.version(1).download("tfrecord")
-```
-
-The code is run on Google Colabs or Jupyter Notebook. Or you can use my dataset here: [download](https://drive.google.com/drive/folders/1_0Wb2Y4eazmsUTe0e2wIB7uUUhZOZuzQ?usp=sharing).
-
 ### Modelling
 
 SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model with 267 layers and 15 million parameters. It provides real-time inference under computing limitations in devices such as smartphones. The SSD MobileNet v2 model is basically a 2 part model.
