@@ -134,6 +134,8 @@ def train(opt):
     while True:
         image_tensors, labels = train_dataset.get_batch()
         image = image_tensors
+        if opt.pretrained:
+            image = tf.image.grayscale_to_rgb(image)
         # image = tf.transpose(image, perm=[0, 3, 1, 2])
         labels = labels[0].copy()
         labels[0] = str(labels[0], "utf-8")
@@ -286,6 +288,11 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--baiduCTC", action="store_true", help="for data_filtering_off mode"
+    )
+    parser.add_argument(
+        "--pretrained",
+        action="store_true",
+        help="Use pretrained feature extractor from Keras with architecture that choosen in feature extractor arguments",
     )
     """ Data processing """
     parser.add_argument(

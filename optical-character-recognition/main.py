@@ -124,9 +124,10 @@ def predict_nik(json_input):
     nik = preds_str[0]
     return nik  # String NIK
 
+
 def process_sex(input):
-    male = ['k', 'l']
-    female = ['p', 'r']
+    male = ["k", "l"]
+    female = ["p", "r"]
     sex = 0
     for ch in input.lower():
         if ch in male:
@@ -136,10 +137,11 @@ def process_sex(input):
 
     return "LAKI-LAKI" if sex >= 0 else "PEREMPUAN"
 
+
 def process_married(input):
-    cerais = ['c', 'r']
-    kawins = ['k', 'w', 'n']
-    belums = ['u', 'm']
+    cerais = ["c", "r"]
+    kawins = ["k", "w", "n"]
+    belums = ["u", "m"]
 
     divorce = 0
     belum = 0
@@ -154,11 +156,13 @@ def process_married(input):
 
     return "CERAI" if divorce > 0 else "BELUM KAWIN" if belum else "KAWIN"
 
+
 def process_national(input):
     for ch in input.lower():
-        if ch == 'w' or ch == 'n':
+        if ch == "w" or ch == "n":
             return "INDONESIA"
     return "DEFAULT"
+
 
 def predict(json_input):
     nik = predict_nik(json_input)

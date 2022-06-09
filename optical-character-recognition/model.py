@@ -14,22 +14,34 @@ class Model(keras.models.Model):
         print("No Transformation Module")
 
         if opt.FeatureExtraction == "VGG":
-            self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel)
+            if opt.pretrained:
+                self.FeatureExtraction = keras.applications.vgg16.VGG16(
+                    include_top=False, weights="imagenet", input_shape=(32, 100, 3)
+                )
+                for layer in self.FeatureExtraction.layers[:15]:
+                    layer.trainable = False
+            else:
+                self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel)
         elif opt.FeatureExtraction == "ResNet":
             self.FeatureExtraction = ResNet_FeatureExtractor(opt.output_channel)
         self.FeatureExtraction_output = opt.output_channel
         # untuk sekarang
         if opt.FeatureExtraction == "VGG":
-            self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
-                output_size=(24, 1)
-            )
+            if opt.pretrained:
+                self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
+                    output_size=(3, 1)
+                )
+            else:
+                self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
+                    output_size=(24, 1)
+                )
         elif opt.FeatureExtraction == "ResNet":
             self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
                 output_size=(23, 1)
             )
         print("No sequence modelling module specified")
         self.SequenModelling_output = self.FeatureExtraction_output
-
+        self.flatten = layers.Flatten()
         self.Prediction = layers.Dense(opt.num_class)
 
     def call(self, X, text, training=None):
@@ -41,7 +53,9 @@ class Model(keras.models.Model):
         )  # [b, w, h, c] -> [b, h, w, c]
         visual_feature = tf.squeeze(visual_feature, axis=2)
 
+        # if self.opt.pretrained:
+        #     contextual_feature = self.flatten(visual_feature)
+        # else:
         contextual_feature = visual_feature
-
         prediction = self.Prediction(contextual_feature)
         return prediction

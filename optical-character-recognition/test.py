@@ -30,6 +30,8 @@ def validation(model, criterion, evaluation_loader, converter, opt):
         batch_size = image_tensors.shape[0]
         length_of_data = length_of_data + batch_size
         image = image_tensors
+        if opt.pretrained:
+            image = tf.image.grayscale_to_rgb(image)
 
         length_for_pred = tf.constant(
             [opt.batch_max_length] * batch_size, dtype=tf.int32
@@ -83,17 +85,6 @@ def validation(model, criterion, evaluation_loader, converter, opt):
             else:
                 preds_index = tf.math.argmax(preds, axis=2)
             preds_str = converter.decode(preds_index.numpy().T, preds_size.numpy())
-            with open("decode_log.txt", "a") as openfile:
-                openfile.write("===========" * 10)
-                openfile.write("\n")
-                openfile.write(f"preds_index → {preds_index.numpy().T}")
-                openfile.write("\n")
-                openfile.write(f"preds_size → {preds_size.numpy()}")
-                openfile.write("\n")
-                openfile.write(f"preds_str → {preds_str}")
-                openfile.write("\n")
-                openfile.write(f"preds → {preds}")
-                openfile.write("\n")
         else:
             preds = model(image, text_for_pred, training=False)
             forward_time = time.time() - start_time
