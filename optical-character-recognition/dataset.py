@@ -66,11 +66,13 @@ def tensorflow_dataloader(
     num_workers=0,
     collate_fn=None,
     prefetch_factor=2,
+    imgH=32,
+    imgW=100
 ):
     data = tf.data.Dataset.from_generator(
         dataset,
         output_signature=(
-            tf.TensorSpec(shape=(32, 100, 1), dtype=tf.float64),
+            tf.TensorSpec(shape=(imgH, imgW, 1), dtype=tf.float64),
             tf.TensorSpec(shape=(1), dtype=tf.string),
         ),
     )
@@ -497,6 +499,8 @@ class Batch_Balanced_Dataset(object):
                 shuffle=True,
                 collate_fn=_AlignCollate,
                 num_workers=int(opt.workers),
+                imgH=opt.imgH,
+                imgW=opt.imgW
             )
             self.data_loader_list.append(_data_loader)
             self.dataloader_iter_list.append(iter(_data_loader))

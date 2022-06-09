@@ -55,6 +55,8 @@ def train(opt):
         shuffle=True,
         num_workers=int(opt.workers),
         collate_fn=AlignCollate_valid,
+        imgH=opt.imgH,
+        imgW=opt.imgW
     )
     log.write(valid_dataset_log)
     print("-" * 80)
@@ -237,6 +239,7 @@ def train(opt):
 
         if (iteration + 1) == opt.num_iter:
             print("end the training")
+            model.save(f"./saved_models/{opt.exp_name}/;ast_iter")
             sys.exit()
         iteration += 1
 

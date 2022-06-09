@@ -9,7 +9,7 @@ class VGG_FeatureExtractor(keras.models.Model):
 
     """
 
-    def __init__(self, output_channel=512, **kwargs):
+    def __init__(self, output_channel=512, input_shape=(32, 100, 1), **kwargs):
         super(VGG_FeatureExtractor, self).__init__(**kwargs)
 
         self.output_channel = [
@@ -26,7 +26,7 @@ class VGG_FeatureExtractor(keras.models.Model):
                     strides=1,
                     padding="SAME",
                     kernel_initializer="he_uniform",
-                    input_shape=(32, 100, 1),
+                    input_shape=input_shape,
                 ),
                 layers.ReLU(),
                 layers.MaxPool2D(pool_size=2),

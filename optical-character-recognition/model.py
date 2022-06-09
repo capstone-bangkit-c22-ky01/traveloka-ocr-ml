@@ -16,12 +16,12 @@ class Model(keras.models.Model):
         if opt.FeatureExtraction == "VGG":
             if opt.pretrained:
                 self.FeatureExtraction = keras.applications.vgg16.VGG16(
-                    include_top=False, weights="imagenet", input_shape=(32, 100, 3)
+                    include_top=False, weights="imagenet", input_shape=(opt.imgH, opt.imgW, 3)
                 )
-                for layer in self.FeatureExtraction.layers[:15]:
-                    layer.trainable = False
+                # for layer in self.FeatureExtraction.layers:
+                #     layer.trainable = False
             else:
-                self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel)
+                self.FeatureExtraction = VGG_FeatureExtractor(opt.output_channel, input_shape=(opt.imgH, opt.imgW, 1))
         elif opt.FeatureExtraction == "ResNet":
             self.FeatureExtraction = ResNet_FeatureExtractor(opt.output_channel)
         self.FeatureExtraction_output = opt.output_channel
@@ -33,7 +33,7 @@ class Model(keras.models.Model):
                 )
             else:
                 self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
-                    output_size=(24, 1)
+                    output_size=(49, 1)
                 )
         elif opt.FeatureExtraction == "ResNet":
             self.AdaptiveAvgPool = tfa.layers.AdaptiveAveragePooling2D(
