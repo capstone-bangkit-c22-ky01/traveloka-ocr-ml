@@ -36,7 +36,7 @@ SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model w
     <img src="contents/SSD.png" alt="SSD Layer" width="550" style="vertical-align:middle">
 </p>
 
-- MobileNetV2 as Feature Extraction and Classifier
+- MobileNetV2 as Feature Extraction and Classifier.
 
 <p align="center">
     <img src="contents/MobileNetV2.png" alt="MobileNetV2 Classifier" width="550" style="vertical-align:middle">
