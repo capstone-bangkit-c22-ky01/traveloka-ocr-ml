@@ -1,0 +1,25 @@
+item {
+    name: "JENIS KELAMIN",
+    id: 1,
+    display_name: "JENIS KELAMIN"
+}
+item {
+    name: "KEWARGANEGARAAN",
+    id: 2,
+    display_name: "KEWARGANEGARAAN"
+}
+item {
+    name: "NAMA",
+    id: 3,
+    display_name: "NAMA"
+}
+item {
+    name: "NIK",
+    id: 4,
+    display_name: "NIK"
+}
+item {
+    name: "STATUS PERKAWINAN",
+    id: 5,
+    display_name: "STATUS PERKAWINAN"
+}
