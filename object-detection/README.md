@@ -16,7 +16,7 @@ After Collecting, we annotate images manually using [Roboflow](https://app.robof
 
 | Demo Image  | Annotate | 
 | ---         |     ---      | 
-| <img src="./contents/ktp boruto.jpg" width="450" height="300">    |  <img src="./contents/localize.png" width="450" height="300">   |  
+| <img src="./contents/demo/ktp boruto.jpg" width="450" height="300">    |  <img src="./contents/localize.png" width="450" height="300">   |  
 
 After the annotations are done, proceed to create a new version of our data set. We implemented [preprocessing](https://docs.roboflow.com/image-transformations/image-preprocessing) and [augmentation](https://docs.roboflow.com/image-transformations/image-augmentation) in Roboflow. Then [export the data](https://docs.roboflow.com/exporting-data) for training to tfrecord.
 
@@ -30,34 +30,41 @@ We resized the dataset to 416x416 for a smaller file size and faster training. T
 
 SSD MobileNet v2 (Single Shot Detector MobileNet) is an object detection model with 267 layers and 15 million parameters. It provides real-time inference under computing limitations in devices such as smartphones. The SSD MobileNet v2 model is basically a 2 part model.
 
-- A MobileNetV2 base network with an SSD layer classifying the detected images.
+- SSD as Object Localization and Classifier.
 
 <p align="center">
-    <img src="contents/ssd_diagram.png" alt="SSD Layer" width="550" style="vertical-align:middle">
+    <img src="contents/SSD.png" alt="SSD Layer" width="550" style="vertical-align:middle">
 </p>
 
-- The MobileNet base network acts as a feature extractor for the SSD layer which will then classify the desired object.
+- MobileNetV2 as Feature Extraction and Classifier
 
 <p align="center">
-    <img src="contents/Classifier.png" alt="MobileNetV2 Classifier" width="550" style="vertical-align:middle">
+    <img src="contents/MobileNetV2.png" alt="MobileNetV2 Classifier" width="550" style="vertical-align:middle">
 </p>
 
 ### Training
 
-In this notebook, we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
+In [this notebook](https://github.com/capstone-bangkit-c22-ky01/traveloka-ocr-ml/blob/main/object-detection/Object%20Detection.ipynb), we use SSD MobileNet v2 with the TensorFlow Object Detection API to train custom object detection.
 
 We use SSD MobileNet v2 from [TensorFlow 1 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
 
 - Pretained model: [ssd_mobilenet_v2_coco_2018_03_29](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz)
 - Pipeline config files: [ssd_mobilenet_v2_coco.config](https://github.com/tensorflow/models/blob/master/research/object_detection/samples/configs/ssd_mobilenet_v2_coco.config)
 
-Please follow all the instructions on the .ipynb file. This file is explained in detail.
+Please follow all the instructions on [this notebook](https://github.com/capstone-bangkit-c22-ky01/traveloka-ocr-ml/blob/main/object-detection/Object%20Detection.ipynb). This file is explained in detail.
 
 ### Demo
 
+In [this notebook](https://github.com/capstone-bangkit-c22-ky01/traveloka-ocr-ml/blob/main/object-detection/Demo%20Object%20Detection.ipynb), we conducted several demos of Indonesian KTP (Identity Card)/Indonesian User ID Object Detection.
+
 | Demo Image | Prediction Result | 
 | ---         |     ---      | 
-| <img src="./contents/ktp boruto.jpg" width="450" height="300">    |  <img src="./contents/boruto detect.png" width="450" height="300">   |  
+| <img src="./contents/demo/Abdurrahman Hadin.jpg" width="450" height="300">    |  <img src="./contents/detect demo/A H detect.png" width="450" height="300">   |  
+| <img src="./contents/demo/Setiawan.jpg" width="450" height="300">    |  <img src="./contents/detect demo/setiawan detect.png" width="450" height="300">   |  
+| <img src="./contents/demo/bobobi.jpg" width="450" height="300">    |  <img src="./contents/detect demo/boboi detect.png" width="450" height="300">   |  
+| <img src="./contents/demo/gopal.jpg" width="450" height="300">    |  <img src="./contents/detect demo/gopal detect.png" width="450" height="300">   |  
+| <img src="./contents/demo/ktp boruto.jpg" width="450" height="300">    |  <img src="./contents/detect demo/boruto detect.png" width="450" height="300">   |  
+| <img src="./contents/demo/ying.jpg" width="450" height="300">    |  <img src="./contents/detect demo/ying detect.png" width="450" height="300">   |  
 
 ### Reference
 1. [Liu, Wei., et al. (2016). SSD: Single Shot MultiBox Detector. European Conference on Computer Vision. ECCV 2016: Computer Vision – ECCV 2016 pp 21-37.](https://arxiv.org/abs/1512.02325)
