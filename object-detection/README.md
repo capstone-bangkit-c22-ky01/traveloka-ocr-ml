@@ -51,7 +51,32 @@ We use SSD MobileNet v2 from [TensorFlow 1 Detection Model Zoo](https://github.c
 - Pretained model: [ssd_mobilenet_v2_coco_2018_03_29](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz)
 - Pipeline config files: [ssd_mobilenet_v2_coco.config](https://github.com/tensorflow/models/blob/master/research/object_detection/samples/configs/ssd_mobilenet_v2_coco.config)
 
+<p align="center">
+    <img src="contents/OD Model.jpeg" alt="Object Detection KTP Model" width="640" style="vertical-align:middle">
+</p>
+
 Please follow all the instructions on [this notebook](https://github.com/capstone-bangkit-c22-ky01/traveloka-ocr-ml/blob/main/object-detection/Object%20Detection.ipynb). This file is explained in detail.
+
+### Result
+#### Last Evaluation
+
+<p align="center">
+    <img src="contents/Last Evaluation.png" alt="Last Evaluation" width="640" style="vertical-align:middle">
+</p>
+
+#### Tensorboard
+
+<p align="center">
+    <img src="contents/tensorboard/Average Precision.png" alt="Last Evaluation" width="1280" style="vertical-align:middle">
+</p>
+
+<p align="center">
+    <img src="contents/tensorboard/Average Recall.png" alt="Last Evaluation" width="1280" style="vertical-align:middle">
+</p>
+
+<p align="center">
+    <img src="contents/tensorboard/Loss.png" alt="Last Evaluation" width="1280" style="vertical-align:middle">
+</p>
 
 ### Demo
 
